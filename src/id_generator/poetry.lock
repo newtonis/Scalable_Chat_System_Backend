@@ -96,13 +96,13 @@ dotenv = ["python-dotenv"]
 
 [[package]]
 name = "id-generator-lib"
-version = "0.1.0"
+version = "0.1.2"
 description = "Database structure definition for id generator module"
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
 files = [
-    {file = "id_generator_lib-0.1.0-py3-none-any.whl", hash = "sha256:e8c2c97a6b11e7858e3b3a3d7e642d462d71b40582906969090f902001a769e9"},
+    {file = "id_generator_lib-0.1.2-py3-none-any.whl", hash = "sha256:e82496eb29b48086c5a193a0ee3a0e90b94b44fe6542f236cee910344cffdabd"},
 ]
 
 [package.dependencies]
@@ -112,7 +112,7 @@ pytest = ">=9.0.3,<10.0.0"
 
 [package.source]
 type = "file"
-url = "dist/id_generator_lib-0.1.0-py3-none-any.whl"
+url = "dist/id_generator_lib-0.1.2-py3-none-any.whl"
 
 [[package]]
 name = "iniconfig"
@@ -433,4 +433,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11"
-content-hash = "0662ac2864303a250acd8edbd2c2cbf6d66bb4f89d34a1f354e685647d82696e"
+content-hash = "b86e99104e4e3f0841730b54395b1cd975312076fbcf2a69cd2d65a647458beb"
