@@ -1,34 +1,29 @@
 from flask import Blueprint, request, jsonify
 from utils.jwt_helper import generate_token
+from utils.users import user_registrator
 
 auth_bp = Blueprint("auth", __name__)
-
-# Base de datos en memoria
-users_db = {}
 
 
 @auth_bp.route("/register", methods=["POST"])
 def register():
     data = request.get_json()
 
-    if not data or not data.get("email") or not data.get("password"):
-        return jsonify({"error": "Email y contraseña son requeridos"}), 400
+    if not data or not data.get("email") or not data.get("password") or not data.get("name"):
+        return jsonify({"error": "Email, contraseña y Name son requeridos"}), 400
 
     email = data["email"]
+    name = data["name"]
+    password = data["password"]
 
-    if email in users_db:
-        return jsonify({"error": "El usuario ya existe"}), 409
+    result, info = user_registrator.register_user(name, email, password)
 
-    ## TODO: Change for a logic that support concurrency on user registration
+    if not result and info['error'] == 'USER_REGISTERED':
+        return jsonify({"error": "El usuario ya existe"}), 500
+    elif result:
+        return jsonify({"mensaje": "User registered", "id": info['results'] }), 201
 
-    user_id = len(users_db) + 1
-    users_db[email] = {
-        "id": user_id,
-        "email": email,
-        "password": data["password"],  # TODO: Use hashing for password store
-    }
-
-    return jsonify({"mensaje": "Usuario registrado correctamente", "id": user_id}), 201
+    return jsonify({"mensaje": "Unexpected result"}), 500
 
 
 @auth_bp.route("/login", methods=["POST"])
@@ -39,10 +34,15 @@ def login():
         return jsonify({"error": "Email y contraseña son requeridos"}), 400
 
     email = data["email"]
-    user = users_db.get(email)
+    password = data["password"]
 
-    if not user or user["password"] != data["password"]:
+    result, info = user_registrator.login_user(email, password)
+
+    if not result and info["error"] == 'INVALID_EMAIL':
         return jsonify({"error": "Credenciales inválidas"}), 401
+    elif not result and info["error"] == 'INVALID_PASSWORD':
+        return jsonify({"error": "Credenciales inválidas"}), 401
+    elif result:
+        return jsonify({"name": info["name"], "id": info["id"], "token": info["token"]}), 200
 
-    token = generate_token(str(user["id"]))
-    return jsonify({"token": token}), 200
+    return jsonify({"mensaje": "Unexpected result"}), 500

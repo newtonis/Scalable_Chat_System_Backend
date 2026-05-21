@@ -2,7 +2,7 @@ import pytest
 import jwt
 import datetime
 from app import app
-import routes.auth as auth_module
+from utils import users
 
 
 # ──────────────────────────────────────────────
@@ -11,10 +11,10 @@ import routes.auth as auth_module
 
 @pytest.fixture
 def client():
-    """Cliente de prueba con base de datos limpia en cada test."""
+    # Test client with clean dabase on each test
     app.config["TESTING"] = True
     app.config["JWT_SECRET_KEY"] = "1234"
-    auth_module.users_db.clear()
+    users.users_db.clear()
 
     with app.test_client() as client:
         yield client

@@ -8,14 +8,16 @@ import jwt
 import websockets
 import json
 import logging
+from utils.users import user_registrator
 
 
 @pytest.fixture
 def client():
-    """Cliente de prueba con base de datos limpia en cada test."""
+    # Test client with clean database on each test
     app.config["TESTING"] = True
     app.config["JWT_SECRET_KEY"] = "1234"
-    auth_module.users_db.clear()
+
+    user_registrator.clean_db()
 
     with app.test_client() as client:
         yield client
@@ -23,15 +25,15 @@ def client():
 
 @pytest.fixture
 def usuario_registrado(client):
-    """Registra un usuario base y retorna sus credenciales."""
-    credenciales = {"email": "test@example.com", "password": "1234"}
+    # Register user with its password
+    credenciales = {"email": "test@example.com", "password": "1234", "name": "test"}
     client.post("/auth/register", json=credenciales)
     return credenciales
 
 
 @pytest.fixture
 def token_valido(client, usuario_registrado):
-    """Retorna un token JWT válido para el usuario registrado."""
+    # Get validated token
     res = client.post("/auth/login", json=usuario_registrado)
     
     return res.get_json()["token"]
@@ -50,11 +52,12 @@ def user_id(client, token_valido):
 def test_register(client):
     res = client.post("/auth/register", json={
         "email": "nuevo@example.com",
-        "password": "abcd"
+        "password": "abcd",
+        "name": "test"
     })
     assert res.status_code == 201
     data = res.get_json()
-    assert data["mensaje"] == "Usuario registrado correctamente"
+    assert data["mensaje"] == "User registered"
     assert "id" in data
 
 
@@ -81,7 +84,7 @@ def test_join_server(client, token_valido, user_id):
     data = res.get_json()
     logging.info("Status code is 200")
 
-    assert data["server"] in constants.CHAT_SERVERS_URL
+    assert data["server"] >= 0 and data["server"] < len(constants.CHAT_SERVERS_URL)
 
 
 def test_server_connection(client, token_valido, user_id):
