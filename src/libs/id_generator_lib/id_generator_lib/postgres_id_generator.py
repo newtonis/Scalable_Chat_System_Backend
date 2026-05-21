@@ -3,18 +3,15 @@
 # If the message group is new then id will start form 0
 
 from .database_conn import database_conn
-from .init_database import try_init_database
 import psycopg2
-
-try_init_database()
-
-conn = database_conn.conn
-cursor = database_conn.cursor
+import logging
 
 
 class PostgresIdGenerator:
     def __init__(self):
-        pass
+        logging.info("Starting postgres id generator instance ...")
+        self.conn = database_conn.conn
+        self.cursor = database_conn.cursor
 
     def generate_new_id(self, message_group):
         # TODO: Input sanitize, only allow certain characters
@@ -32,15 +29,15 @@ class PostgresIdGenerator:
         # If the row does not exist insert a new row, else update the row with the new count
 
         try:
-            cursor.execute(command)
+            self.cursor.execute(command)
         except psycopg2.errors.LockNotAvailable:
-            print("Transaction in confict, cancelled")
-            conn.rollback()
+            logging.info("Transaction in confict, cancelled")
+            self.conn.rollback()
             return {
                 "status": "failed_txn (select counter)"
             }
 
-        fila = cursor.fetchone()
+        fila = self.cursor.fetchone()
 
         if fila is None:
             command = f"""
@@ -68,14 +65,14 @@ class PostgresIdGenerator:
                     message_group_name = '{message_group}'
             """
             answer = fila[0] + 1
-        print(command)
+        logging.info(command)
         try:
-            cursor.execute(command)
-            conn.commit()
-            print("Transaccion completada")
+            self.cursor.execute(command)
+            self.conn.commit()
+            logging.info("Transaccion completada")
         except psycopg2.DatabaseError as e:
-            print("Transaccion en conflicto, cancelada")
-            conn.rollback() # Declare for psycopg2 transaction failed
+            logging.info("Transaccion en conflicto, cancelada")
+            self.conn.rollback() # Declare for psycopg2 transaction failed
             return {
                 "status": "failed_txn (insert/update counter)"
             }
@@ -84,3 +81,8 @@ class PostgresIdGenerator:
             "status": "id_generated",
             "result": answer
         }
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        logging.info("Ending postgres ID generator")
+        database_conn.close_connection()
+

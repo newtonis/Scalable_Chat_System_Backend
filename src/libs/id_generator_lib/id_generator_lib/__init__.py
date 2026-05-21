@@ -1,6 +1,6 @@
-from .init_database import try_init_database
+from .database_conn import database_conn
 
-try_init_database()
+database_conn.try_init_database()
 
 from .postgres_id_generator import PostgresIdGenerator
 
