@@ -1,0 +1,9 @@
+*.venv
+*.env
+redis_data
+*.pyc
+.pytest_cache
+.venv_vs_code
+.vscode
+pg-data
+__pycache__

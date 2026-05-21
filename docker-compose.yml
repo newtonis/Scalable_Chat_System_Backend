@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    restart: always
+  kv_store:
+    image: redis:7.2-alpine
+    container_name: kv_store
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - /redis_data:/data
+    # Aquí configuramos la persistencia AOF (tipo WAL) y el límite de RAM directo por comandos
+    command: >
+      redis-server 
+      --appendonly yes 
+      --maxmemory 512mb 
+      --maxmemory-policy allkeys-lru
+      --bind 0.0.0.0
+      --protected-mode no
+  kv_store_ms:
+    build: /src/kv_store/.
+    restart: always
+    ports: 
+      - "5001:5001"
+
+
