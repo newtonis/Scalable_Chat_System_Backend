@@ -1,6 +1,8 @@
 from flask import Flask
 from routes.auth import auth_bp
 from routes.api import protected_bp
+import logging
+
 
 app = Flask(__name__)
 app.config["JWT_SECRET_KEY"] = "1234"  # TODO: Colocar clave como un secret
@@ -15,5 +17,9 @@ def index():
 
 
 def start_coordinator():
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(message)s"  # Clean disign for console
+    )
     app.run(debug=True, port=5000)
 

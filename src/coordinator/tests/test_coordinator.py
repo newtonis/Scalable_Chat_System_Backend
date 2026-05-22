@@ -9,6 +9,7 @@ import websockets
 import json
 import logging
 from utils.users import user_registrator
+import random
 
 
 @pytest.fixture
@@ -38,7 +39,6 @@ def token_valido(client, usuario_registrado):
     
     return res.get_json()["token"]
 
-
 @pytest.fixture
 def user_id(client, token_valido):
     payload = jwt.decode(
@@ -47,6 +47,22 @@ def user_id(client, token_valido):
         algorithms=["HS256"]
     )
     return payload["sub"]
+
+
+@pytest.fixture
+def func_register_and_login_new_user():
+    def register_and_login_user(client_ref):
+        credenciales = {"email": f"random@email{random.randrange(200)}.com", "password": str(random.randrange(1000)), "name": f"foo {random.randrange(200)}"}
+        client.post("/auth/register", json=credenciales)
+        res = client.post("/auth/login", json=credenciales)
+        
+        id = res.get_json()["id"]
+        name = credenciales["name"]
+        token = res.get_json()["token"]
+        logging.info(f"New user information {id}>{name}>{token}")
+        return id, name, token
+    
+    return register_and_login_user
 
 
 def test_register(client):
@@ -74,6 +90,28 @@ def test_query_perfil(client, token_valido):
     assert res.status_code == 200
     data = res.get_json()
     assert data["mensaje"] == "Ruta protegida"
+
+
+def test_register_three_users_and_check_existance(client, func_register_and_login_new_user):
+    id1, name1, token1 = func_register_and_login_new_user(client)
+    id2, name2, token2 = func_register_and_login_new_user(client)
+    id3, name3, token3 = func_register_and_login_new_user(client)
+
+    logging.info("Users created")
+
+    res = client.get("/api/get_total_users", headers={
+        "Authorization": f"Bearer {token1}"
+    })
+
+    data = res.get_json()
+    
+    logging.info(data)
+    users = data["users"]
+
+    assert len(users) == 3
+    assert users[str(id1)] == name1
+    assert users[str(id2)] == name2
+    assert users[str(id3)] == name3
 
 
 def test_join_server(client, token_valido, user_id):

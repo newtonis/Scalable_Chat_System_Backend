@@ -4,6 +4,9 @@ import random
 import asyncio
 import httpx
 from utils import constants, users
+from utils.users import user_registrator
+import logging
+
 
 protected_bp = Blueprint("protected", __name__)
 
@@ -39,17 +42,64 @@ async def join_server():
         "server": server_to_join
     }), 200 
 
-# Get total users
+# Get total users (To be able to know who to send messages)
 @protected_bp.route("/get_total_users", methods=["GET"])
 @token_required
 async def get_total_users():
-    return 
+    return jsonify({"users":
+        user_registrator.get_all_users()
+    }) , 200 
+
 
 # Subscribe to a dm conversation
 @protected_bp.route("/subscribe_dm", methods=["POST"])
 @token_required
 async def subscribe_dm():
-    pass
+    data = request.get_json()
+    if not "target_user_id" in data:
+        logging.info("No target user id in data")
+
+        return jsonify({"result":
+            "No target user in package"
+        }) , 400 
+    logging.info(request.user_id)
+    target_user_id = int(data["target_user_id"])
+
+    user_id = int(request.user_id)
+    session_token = request.token
+
+    # Get which server user is connected, so we subscribe the user to the group in the corresponding server
+    # For now the server is always 0
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{constants.KV_STORE_URL}/api/get?key=userver>{user_id}>{session_token}",
+        )
+    data = response.json()
+    logging.info(f"Response from kv store for server number: {data}")
+
+    server_id = data["value"]
+    message_group = "dm" + "<" + str(min(user_id, target_user_id)) + "<" + str(max(user_id, target_user_id))
+    session_token = request.token
+
+    subscription_info = {
+        "key": f"{message_group}>{server_id}>{user_id}>{session_token}"
+        ,"value": 'true'
+    }
+    logging.info(f"DM Subscription to complete: {subscription_info}")
+
+    async with httpx.AsyncClient() as client:
+        await client.post(
+            f"{constants.KV_STORE_URL}/api/set", 
+            json=subscription_info
+        )
+    logging.info("Subscription completed")
+
+
+    return jsonify({"result":
+        "user subscription is complete"
+    }) , 200  
+
 
 # Subscribe to a group conversation
 @protected_bp.route("/subscribe_group", methods=["POST"])

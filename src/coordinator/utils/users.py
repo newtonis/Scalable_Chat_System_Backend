@@ -38,8 +38,9 @@ class UserRegistrator:
 
     def get_all_users(self):
         answer = {}
-        for user in self.user_db:
-            answer[user['id']] = user['name']
+        for key in self.users_db:
+            value = self.users_db[key]
+            answer[value['id']] = value['name']
         
         return answer
 

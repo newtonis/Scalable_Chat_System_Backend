@@ -6,3 +6,4 @@ CHAT_SERVERS_URL = [
 
 KV_STORE_URL = "http://localhost:5001"
 ID_GENERATOR_URL = "http://localhost:5002"
+COORDINATOR_URL = "http://localhost:5000"

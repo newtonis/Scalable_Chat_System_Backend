@@ -102,3 +102,5 @@ source .venv/bin/activate
 poetry install
 start_coordinator
 
+## Run tests with info logs enabled
+pytest tests -o log_cli=true --log-cli-level=INFO
