@@ -20,5 +20,5 @@ def start_id_generator():
 
     app.config["POSTGRES_HOST"] = args.postgres_host
 
-    app.run(debug=True, port=5002)
+    app.run(host="0.0.0.0", debug=True, port=5002)
 

@@ -32,5 +32,9 @@ services:
     restart: always
     ports: 
       - "5001:5001"
-
+  id_generator:
+    build: /src/id_generator/.
+    restart: always
+    ports: 
+      - "5002:5002"
 
