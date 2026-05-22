@@ -28,6 +28,10 @@ class RedisKVStore:
         async for key in self.r.scan_iter(match=f"*{suffix}:100", count=100):
             await self.r.unlink(key)
 
+    async def delete_all_with_prefix_and_suffix(self, prefix: str, suffix: str):
+        async for key in self.r.scan_iter(match=f"{prefix}*{suffix}:100", count=100):
+            await self.r.unlink(key)
+    
     async def close(self):
         await self.r.aclose()
 

@@ -154,3 +154,49 @@ def test_query_delete_with_suffix():
     v1_, v2_, v3_, v4_ = asyncio.run(delete_keys())
 
     assert v1_ is None and v2_ is None and v3_ is None and v4_ == "My value D"
+
+
+def test_query_delete_with_prefix_and_suffix():
+     
+    async def write_keys():
+        kv_store = RedisKVStore("localhost")
+
+        await kv_store.set("MyPrefix______egrergerge____Mysuffix","My value A")
+        await kv_store.set("MyPrefix______sdfsdfsdfsdf_____Mysuffix","My value B")
+        await kv_store.set("egresdfsdfe____Mysuffix","My value C")
+        await kv_store.set("MyPrefix______other_key","My value D")
+
+        v1 = await kv_store.get("MyPrefix______egrergerge____Mysuffix")
+        v2 = await kv_store.get("MyPrefix______sdfsdfsdfsdf_____Mysuffix")
+        v3 = await kv_store.get("egresdfsdfe____Mysuffix")
+        v4 = await kv_store.get("MyPrefix______other_key")
+
+        await kv_store.close()
+
+        return v1, v2, v3, v4
+    
+
+    v1, v2, v3, v4 = asyncio.run(write_keys())
+
+    assert v1 == "My value A" and v2 == "My value B" and v3 == "My value C" and v4 == "My value D"
+
+    async def delete_keys():
+        kv_store = RedisKVStore("localhost")
+        
+        await kv_store.delete_all_with_suffix("Mysuffix")
+
+        v1 = await kv_store.get("MyPrefix______egrergerge____Mysuffix")
+        v2 = await kv_store.get("MyPrefix______sdfsdfsdfsdf_____Mysuffix")
+        v3 = await kv_store.get("egresdfsdfe____Mysuffix")
+        v4 = await kv_store.get("MyPrefix______other_key")
+
+        await kv_store.delete("egresdfsdfe____Mysuffix")
+        await kv_store.delete("MyPrefix______other_key")
+        
+        await kv_store.close()
+
+        return v1, v2, v3, v4
+    
+    v1_, v2_, v3_, v4_ = asyncio.run(delete_keys())
+
+    assert v1_ is None and v2_ is None and v3_ is None and v4_ == "My value D"
