@@ -18,7 +18,7 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - /redis_data:/data
+      - ./redis_data:/data
     # Aquí configuramos la persistencia AOF (tipo WAL) y el límite de RAM directo por comandos
     command: >
       redis-server 
