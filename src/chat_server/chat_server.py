@@ -43,6 +43,19 @@ async def MessageConsumer(token, queue, client):
         queue.task_done()
 
 
+def validate_msg_package(data):
+    if not "message" in data:
+        return False
+    if not "value" in data["message"]:
+        return False
+    if not "user_id" in data["message"]:
+        return False
+    if not "type" in data["message"]:
+        return False
+    
+    return True
+
+
 # handler is called for each new connection
 async def handler(websocket, server_id):
     logging.info(f"[+] Connected client: {websocket.remote_address} — Total: {len(clients)}")
@@ -107,63 +120,69 @@ async def handler(websocket, server_id):
                 logging.info(f"Respond dummy menssage to {websocket.remote_address}")
                 await websocket.send(json.dumps({"command": "dummy", "value": "dummy answer"}))
             elif command == "new_message":
-                # TODO: Handler payload in case of data format error
-
-                message_value = data.get("message") # Get the message content
-                message_type = data.get("type") # If the message is from a group chat or individual conversation
-                message_recv_id = int(data.get("user_id")) # Get the target user for the message
                 
-                if message_type == "dm":
-                    # Handle direct message
-                    logging.info("Sending direct message ...")
-                    message_group_name = "dm" + "<" + str(min(user_id, message_recv_id)) + "<" + str(max(user_id, message_recv_id))
-                    logging.info(message_group_name)
+                if not validate_msg_package(data):
+                    # TODO: Handle to ask for resend
+                    logging.info(f"Invalid msg received (no message or incomplete message information): {data}. No Action")
+                else:
+                    message_value = data["message"]["value"] # Get the message content
+                    message_type = data["message"]["type"] # If the message is from a group chat or individual conversation
+                    message_recv_id = int(data["message"]["user_id"]) # Get the target user for the message
+                    
+                    if message_type == "dm":
+                        # Handle direct message
+                        logging.info("Sending direct message ...")
+                        message_group_name = "dm" + "<" + str(min(user_id, message_recv_id)) + "<" + str(max(user_id, message_recv_id))
+                        logging.info(message_group_name)
 
-                    # Generate message id
-                    async with httpx.AsyncClient() as client:
-                        res = await client.post(
-                            f"{constants.ID_GENERATOR_URL}/api/generate_id", 
-                            json=
-                            {
-                                "group_name": message_group_name
-                            }
-                        )
-                    ## TODO: handle transaction failure (retries or respond error message in case of failure)
+                        # Generate message id
+                        async with httpx.AsyncClient() as client:
+                            res = await client.post(
+                                f"{constants.ID_GENERATOR_URL}/api/generate_id", 
+                                json=
+                                {
+                                    "group_name": message_group_name
+                                }
+                            )
+                        ## TODO: handle transaction failure (retries or respond error message in case of failure)
 
-                    message_number = res.json()["generated_id"]["result"]
-                    message_group = f"dm_message>{message_group_name}>{message_number}"
-                    msg_value = {
-                        "key": message_group,
-                        "value": message_value
-                    }
-                    # Persist message in KV Store
-                    async with httpx.AsyncClient() as client:
-                        await client.post(
-                            f"{constants.KV_STORE_URL}/api/set", 
-                            json=msg_value
-                        )
+                        message_number = res.json()["generated_id"]["result"]
+                        message_group = f"dm_message>{message_group_name}>{message_number}"
+                        msg_value = {
+                            "key": message_group,
+                            "value": message_value
+                        }
+                        # Persist message in KV Store
+                        async with httpx.AsyncClient() as client:
+                            await client.post(
+                                f"{constants.KV_STORE_URL}/api/set", 
+                                json=msg_value
+                            )
 
-                    # Subsription format {message_group}>{server_id}>{user_id}>{session_token}
+                        # Subsription format {message_group}>{server_id}>{user_id}>{session_token}
 
-                    # Check group subscription users in this server
-                    async with httpx.AsyncClient() as client:
-                        response = await client.get(
-                            f"{constants.KV_STORE_URL}/api/get_all_with_prefix?prefix=usubscription>{message_group_name}>{server_id}"
-                        )
-                    data_subscriptions = response.json()
+                        # Check group subscription users in this server
+                        async with httpx.AsyncClient() as client:
+                            response = await client.get(
+                                f"{constants.KV_STORE_URL}/api/get_all_with_prefix?prefix=usubscription>{message_group_name}>{server_id}"
+                            )
+                        data_subscriptions = response.json()
 
-                    for key in data_subscriptions["value"]:
-                        _, _, _, from_id, user_token = key.split(">")
-                        data = response.json()
-                        if user_token not in clients:
-                            logging.info(f"Subscribed client is not connected to server (Client disconnected without unsubscription or client subscribed and did not connect)")
-                        else:
-                            await clients[user_token].message_queue.put({
-                                "from": from_id
-                                ,"message": message_value # Message value
-                                ,"number": message_number
-                                ,"group": message_group
-                            })
+                        for key in data_subscriptions["value"]:
+                            _, _, _, from_id, user_token = key.split(">")
+                            data = response.json()
+                            if user_token not in clients:
+                                logging.info(f"Subscribed client is not connected to server (Client disconnected without unsubscription or client subscribed and did not connect)")
+                            else:
+                                await clients[user_token].message_queue.put({
+                                    "type": "dm"
+                                    ,"group": message_group_name
+                                    ,"user_id": from_id
+                                    ,"value": message_value
+                                    ,"id": message_number
+                                })
+
+
 
                     # TODO: Search if the client is connected in other servers and send to corresponding client queues in that servers. (Check subscription in other servers)
 

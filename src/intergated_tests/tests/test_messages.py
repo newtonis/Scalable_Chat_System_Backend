@@ -148,10 +148,12 @@ async def test_send_direct_message(client, valid_token, user_id):
         assert res.json()["result"] == "user subscription is complete"
 
         data_package = {
-            'command': 'new_message'
-            ,'type': 'dm'
-            ,'user_id': user_id
-            ,'message': 'test message'
+            'command': 'new_message',
+            'message': {
+                'type': 'dm'
+                ,'user_id': user_id
+                ,'value': 'test message'
+            }
         }
         msg = json.dumps(data_package)
         await websocket.send(msg)
@@ -164,7 +166,9 @@ async def test_send_direct_message(client, valid_token, user_id):
 
         assert rta_json["command"] == 'new_message'
 
-        assert rta_json["message"]["message"] == 'test message' and int(rta_json["message"]["from"]) == user_id
+        logging.info(f'Message id: {rta_json["message"]["id"]}')
+
+        assert rta_json["message"]["value"] == 'test message' and int(rta_json["message"]["user_id"]) == user_id and rta_json["message"]["type"] == "dm"
 
 
 
