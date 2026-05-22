@@ -71,7 +71,7 @@ async def delete_all_with_suffix():
     if not 'suffix' in data:
         return  jsonify({"error": "No suffix in data"}), 400
     
-    # Delete all keys with A sepcific sufix
+    # Delete all keys with A sepcific suffix
     suffix = data['suffix']
 
     host = current_app.config.get('REDIS_HOST')
@@ -82,3 +82,25 @@ async def delete_all_with_suffix():
 
     return jsonify({"status": "Data deleted"}), 200
 
+
+@api_bp.route("/delete_all_with_prefix_and_suffix", methods=["POST"])
+async def delete_all_with_prefix_and_suffix():
+    data = request.get_json()
+
+    if not 'prefix' in data:
+        return  jsonify({"error": "No prefix in data"}), 400
+
+    if not 'suffix' in data:
+        return  jsonify({"error": "No suffix in data"}), 400
+    
+    # Delete all keys with A sepcific suffix and prefix
+    prefix = data['prefix']
+    suffix = data['suffix']
+
+    host = current_app.config.get('REDIS_HOST')
+    my_kv_store = RedisKVStore(host) 
+
+    await my_kv_store.delete_all_with_prefix_and_suffix(prefix, suffix)
+    await my_kv_store.close()
+
+    return jsonify({"status": "Data deleted"}), 200

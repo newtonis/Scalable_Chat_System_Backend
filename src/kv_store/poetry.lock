@@ -149,13 +149,13 @@ i18n = ["Babel (>=2.7)"]
 
 [[package]]
 name = "kv-store-lib"
-version = "0.1.3"
+version = "0.1.4"
 description = "Kv store interface using redis implementation"
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
 files = [
-    {file = "kv_store_lib-0.1.3-py3-none-any.whl", hash = "sha256:cb0c7ccf2474a72d078a7805ad5076d255035881741750b4c9e89754712f32a6"},
+    {file = "kv_store_lib-0.1.4-py3-none-any.whl", hash = "sha256:f27836d6f6429b1cf9320d19aec18e2d3c1e413855b98805c60ea163cfea5179"},
 ]
 
 [package.dependencies]
@@ -165,7 +165,7 @@ redis = ">=7.4.0,<8.0.0"
 
 [package.source]
 type = "file"
-url = "dist/kv_store_lib-0.1.3-py3-none-any.whl"
+url = "dist/kv_store_lib-0.1.4-py3-none-any.whl"
 
 [[package]]
 name = "markupsafe"
@@ -375,4 +375,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11"
-content-hash = "53088d1b4396931c97b2228bbc81a96980e4eda805450dcec4856d8b18243790"
+content-hash = "4f00276daa96bbebd16c92bde1bb18524c8110e0cca98456f04f28c37659e24c"
