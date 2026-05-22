@@ -2,13 +2,12 @@
 # Generate a new id for a specific message group.
 # If the message group is new then id will start form 0
 
-from .database_conn import database_conn
 import psycopg2
 import logging
 
 
 class PostgresIdGenerator:
-    def __init__(self):
+    def __init__(self, database_conn):
         logging.info("Starting postgres id generator instance ...")
         self.conn = database_conn.conn
         self.cursor = database_conn.cursor
@@ -81,8 +80,3 @@ class PostgresIdGenerator:
             "status": "id_generated",
             "result": answer
         }
-    
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        logging.info("Ending postgres ID generator")
-        database_conn.close_connection()
-

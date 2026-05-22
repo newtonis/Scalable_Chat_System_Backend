@@ -10,7 +10,7 @@ import atexit
 ### Database connection singleton
 
 class DatabaseConn:
-    def __init__(self):
+    def __init__(self, postgres_host):
         logging.info("Starting database connection ...")
 
         load_dotenv()
@@ -18,7 +18,7 @@ class DatabaseConn:
         POSTGRES_PASSWORD = os.environ["POSTGRES_PASSWORD"]
         POSTGRES_USER = os.environ["POSTGRES_USER"]
 
-        conn_string = f"host='localhost' dbname='{POSTGRES_DB}' user='{POSTGRES_USER}' password='{POSTGRES_PASSWORD}'"
+        conn_string = f"host='{postgres_host}' dbname='{POSTGRES_DB}' user='{POSTGRES_USER}' password='{POSTGRES_PASSWORD}'"
         self.conn = psycopg2.connect(conn_string)
         self.conn.autocommit = False
 
@@ -85,8 +85,3 @@ class DatabaseConn:
         if self.conn is not None:
             self.conn.close()
             logging.info("Closing postgresql connection")
-
-
-database_conn = DatabaseConn()
-
-atexit.register(database_conn.close_connection)
