@@ -83,7 +83,7 @@ async def subscribe_dm():
     session_token = request.token
 
     subscription_info = {
-        "key": f"{message_group}>{server_id}>{user_id}>{session_token}"
+        "key": f"usubscription>{message_group}>{server_id}>{user_id}>{session_token}"
         ,"value": 'true'
     }
     logging.info(f"DM Subscription to complete: {subscription_info}")

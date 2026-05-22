@@ -55,7 +55,7 @@ async def handler(websocket, server_id):
         logging.info(f"[e] Token: {payload['error']}")
         return 0
 
-    user_id = payload["user_id"]
+    user_id = int(payload["user_id"])
     session_token = payload["token"]
     
     logging.info(f"[+] Client authenticated")
@@ -107,14 +107,17 @@ async def handler(websocket, server_id):
                 logging.info(f"Respond dummy menssage to {websocket.remote_address}")
                 await websocket.send(json.dumps({"command": "dummy", "value": "dummy answer"}))
             elif command == "new_message":
+                # TODO: Handler payload in case of data format error
+
                 message_value = data.get("message") # Get the message content
                 message_type = data.get("type") # If the message is from a group chat or individual conversation
-                message_recv_id = data.get("user_id") # Get the target user for the message
+                message_recv_id = int(data.get("user_id")) # Get the target user for the message
                 
                 if message_type == "dm":
                     # Handle direct message
                     logging.info("Sending direct message ...")
                     message_group_name = "dm" + "<" + str(min(user_id, message_recv_id)) + "<" + str(max(user_id, message_recv_id))
+                    logging.info(message_group_name)
 
                     # Generate message id
                     async with httpx.AsyncClient() as client:
@@ -147,17 +150,17 @@ async def handler(websocket, server_id):
                         response = await client.get(
                             f"{constants.KV_STORE_URL}/api/get_all_with_prefix?prefix=usubscription>{message_group_name}>{server_id}"
                         )
-                    data = response.json()
+                    data_subscriptions = response.json()
 
-                    for key in data["value"]:
-                        _, _, _, user_id, user_token = key.split(">")
+                    for key in data_subscriptions["value"]:
+                        _, _, _, from_id, user_token = key.split(">")
                         data = response.json()
                         if user_token not in clients:
                             logging.info(f"Subscribed client is not connected to server (Client disconnected without unsubscription or client subscribed and did not connect)")
                         else:
                             await clients[user_token].message_queue.put({
-                                "from": user_id
-                                ,"message": msg_value # Message value
+                                "from": from_id
+                                ,"message": message_value # Message value
                                 ,"number": message_number
                                 ,"group": message_group
                             })
@@ -204,7 +207,7 @@ async def handler(websocket, server_id):
         # Wait for the connection event queue to end
         await message_queue.put(None)
         await message_queue.join()
-        await task_consumer
+        task_consumer.cancel()
         
         clients.pop(session_token)
         sessions_by_client_id[user_id].remove(session_token)

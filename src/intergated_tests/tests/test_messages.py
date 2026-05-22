@@ -91,7 +91,7 @@ async def test_subscribe_to_conversation(client, valid_token, user_id):
         message_group = "dm" + "<" + str(user_id) + "<" + str(user_id)
 
         response = await client.get(
-            f"{constants.KV_STORE_URL}/api/get?key={message_group}>{server_id}>{user_id}>{valid_token}"
+            f"{constants.KV_STORE_URL}/api/get?key=usubscription>{message_group}>{server_id}>{user_id}>{valid_token}"
         )
         logging.info(f"subpscription value: {response.json()}")
         value = response.json()["value"]
@@ -102,36 +102,48 @@ async def test_subscribe_to_conversation(client, valid_token, user_id):
 
 
 # Send a Direct Message to Myself
-def test_send_direct_message(client, token_valido, user_id):
+@pytest.mark.asyncio
+async def test_send_direct_message(client, valid_token, user_id):
     # Conect client to server
-    headers = {"Authorization": f"Bearer {token_valido}"}
+    headers = {"Authorization": f"Bearer {valid_token}"}
 
-    res = client.get("/api/join_server", headers=headers)
+    res = await client.get(f"{constants.COORDINATOR_URL}/api/join_server", headers=headers)
     assert res.status_code == 200
-    data = res.get_json()
-    url = data["server"]
+    data = res.json()
+    server_id = data["server"]
 
     # Try to establish websocket server connection
-    logging.info(f"Connecting to {url} ...")
+    logging.info(f"Connecting to {constants.CHAT_SERVERS_URL[server_id]} ...")
     
-    async def query_user_server():
-        async with websockets.connect(f"{url}?token={token_valido}") as websocket:
-            logging.info("¡Conectado exitosamente al WebSocket con Token Bearer!")
-            
-            # Enviar un mensaje de prueba
-            data_package = {
-                'command': 'new_message'
-                ,'type': 'dm'
-                ,'user_id': user_id
-                ,'message': 'test message'
-            }
-            msg = json.dumps(data_package)
-            await websocket.send(msg)
-            respuesta = await websocket.recv()
-            logging.info(f"Servidor dice: {respuesta}")
+    async with websockets.connect(f"{constants.CHAT_SERVERS_URL[server_id]}?token={valid_token}") as websocket:
+        logging.info("Connected to websocket with bearer Token")
+    
+        # Wait for server to mark us as connected
+        await asyncio.sleep(2)
 
-            return respuesta
+        # Complete subscription
+        res = await client.post(f"{constants.COORDINATOR_URL}/api/subscribe_dm", json={"target_user_id": user_id}, headers=headers)
 
-    asyncio.run(query_user_server())
+        assert res.json()["result"] == "user subscription is complete"
+
+        data_package = {
+            'command': 'new_message'
+            ,'type': 'dm'
+            ,'user_id': user_id
+            ,'message': 'test message'
+        }
+        msg = json.dumps(data_package)
+        await websocket.send(msg)
+
+        # Wait for the message to be sent back
+        respuesta = await websocket.recv()
+        logging.info(f"Servidor dice: {respuesta}")
+
+        rta_json = json.loads(respuesta)
+
+        assert rta_json["command"] == 'new_message'
+
+        assert rta_json["message"]["message"] == 'test message' and int(rta_json["message"]["from"]) == user_id
+
 
 
