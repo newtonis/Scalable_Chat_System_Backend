@@ -152,36 +152,3 @@ def test_server_connection(client, token_valido, user_id):
 
     asyncio.run(query_user_server())
 
-
-# Send a Direct Message to Myself
-def test_send_direct_message(client, token_valido, user_id):
-    # Conect client to server
-    headers = {"Authorization": f"Bearer {token_valido}"}
-
-    res = client.get("/api/join_server", headers=headers)
-    assert res.status_code == 200
-    data = res.get_json()
-    url = data["server"]
-
-    # Try to establish websocket server connection
-    logging.info(f"Connecting to {url} ...")
-    
-    async def query_user_server():
-        async with websockets.connect(f"{url}?token={token_valido}") as websocket:
-            logging.info("¡Conectado exitosamente al WebSocket con Token Bearer!")
-            
-            # Enviar un mensaje de prueba
-            data_package = {
-                'command': 'new_message'
-                ,'type': 'dm'
-                ,'user_id': user_id
-                ,'message': 'test message'
-            }
-            msg = json.dumps(data_package)
-            await websocket.send(msg)
-            respuesta = await websocket.recv()
-            logging.info(f"Servidor dice: {respuesta}")
-
-            return respuesta
-
-    asyncio.run(query_user_server())

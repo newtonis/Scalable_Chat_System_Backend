@@ -145,7 +145,7 @@ async def handler(websocket, server_id):
                     # Check group subscription users in this server
                     async with httpx.AsyncClient() as client:
                         response = await client.get(
-                            f"{constants.KV_STORE_URL}/api/get_all_with_prefix?prefix=usubscription>server_{message_group_name}>{server_id}"
+                            f"{constants.KV_STORE_URL}/api/get_all_with_prefix?prefix=usubscription>{message_group_name}>{server_id}"
                         )
                     data = response.json()
 
@@ -189,6 +189,18 @@ async def handler(websocket, server_id):
     except websockets.exceptions.ConnectionClosedError as e:
         logging.info(f"[-] Cliente desconectado con error: {websocket.remote_address} — {e}")
     finally:
+        # Register user disconnection in the corresponding selected server
+        async with httpx.AsyncClient() as client:
+            await client.post(
+                f"{constants.KV_STORE_URL}/api/delete", 
+                json=
+                {
+                    "key": f"userver>{user_id}>{session_token}"
+                }
+            )
+        
+        # TODO: Manage user group chat unsubscriptions
+
         # Wait for the connection event queue to end
         await message_queue.put(None)
         await message_queue.join()

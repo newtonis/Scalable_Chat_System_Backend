@@ -40,6 +40,26 @@ def user_id(login_result):
 
 
 @pytest.mark.asyncio
+async def test_connect_and_disconnect(client, valid_token, user_id):
+    headers = {"Authorization": f"Bearer {valid_token}"}
+
+    res = await client.get(f"{constants.COORDINATOR_URL}/api/join_server", headers=headers)
+
+    assert res.status_code == 200
+    data = res.json()
+    server_id = data["server"]
+
+    # Open websocket connection to mark user as connected to server
+    
+    async with websockets.connect(f"{constants.CHAT_SERVERS_URL[server_id]}?token={valid_token}") as websocket:
+        logging.info("Connected to websocker with bearer Token")
+
+        await asyncio.sleep(20)
+
+        logging.info("Wait time ended, disconnecting")
+
+
+@pytest.mark.asyncio
 async def test_subscribe_to_conversation(client, valid_token, user_id):
 
     # Conect client to serverpp
@@ -79,3 +99,39 @@ async def test_subscribe_to_conversation(client, valid_token, user_id):
         assert value == 'true'
 
         logging.info("Subscription is verified")
+
+
+# Send a Direct Message to Myself
+def test_send_direct_message(client, token_valido, user_id):
+    # Conect client to server
+    headers = {"Authorization": f"Bearer {token_valido}"}
+
+    res = client.get("/api/join_server", headers=headers)
+    assert res.status_code == 200
+    data = res.get_json()
+    url = data["server"]
+
+    # Try to establish websocket server connection
+    logging.info(f"Connecting to {url} ...")
+    
+    async def query_user_server():
+        async with websockets.connect(f"{url}?token={token_valido}") as websocket:
+            logging.info("¡Conectado exitosamente al WebSocket con Token Bearer!")
+            
+            # Enviar un mensaje de prueba
+            data_package = {
+                'command': 'new_message'
+                ,'type': 'dm'
+                ,'user_id': user_id
+                ,'message': 'test message'
+            }
+            msg = json.dumps(data_package)
+            await websocket.send(msg)
+            respuesta = await websocket.recv()
+            logging.info(f"Servidor dice: {respuesta}")
+
+            return respuesta
+
+    asyncio.run(query_user_server())
+
+
