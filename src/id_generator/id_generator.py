@@ -1,5 +1,6 @@
 from flask import Flask
 from routes.api import api_bp
+import argparse
 
 app = Flask(__name__)
 
@@ -12,5 +13,12 @@ def index():
 
 
 def start_id_generator():
+    parser = argparse.ArgumentParser(description="Id generator Api")
+    parser.add_argument("postgres_host", type=str, help="postgres host")
+
+    args = parser.parse_args()
+
+    app.config["POSTGRES_HOST"] = args.postgres_host
+
     app.run(debug=True, port=5002)
 

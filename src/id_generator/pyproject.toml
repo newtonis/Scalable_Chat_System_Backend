@@ -8,7 +8,7 @@ authors = [
 requires-python = ">=3.11"
 
 [tool.poetry.dependencies]
-id_generator_lib = { file = "dist/id_generator_lib-0.1.2-py3-none-any.whl" }
+id_generator_lib = { file = "dist/id_generator_lib-0.1.3-py3-none-any.whl" }
 flask = {extras = ["async"], version = "^3.1.3"}
 
 [tool.poetry.scripts]
