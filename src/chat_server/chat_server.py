@@ -27,14 +27,17 @@ async def MessageConsumer(token, queue, client):
     logging.info(f"Consumer started for {token}")
     while True:
         item = await queue.get()
-        logging.info(f"Processing message: {item}")
-
-        client.websocket.send(json.dumps({
-            "command": "new_message",
-            "message": item
-        }))
         
-        logging.info(f"Message processed")
+        if item:
+            logging.info(f"Processing message: {item}")
+            await client.websocket.send(json.dumps({
+                "command": "new_message",
+                "message": item
+            }))
+            
+            logging.info(f"Message processed")
+        else:
+            logging.info(f"Last item")
 
         # We send the queue a message the task is completed
         queue.task_done()
@@ -111,7 +114,7 @@ async def handler(websocket, server_id):
                 if message_type == "dm":
                     # Handle direct message
                     logging.info("Sending direct message ...")
-                    message_group_name = "dmgeminig " + "-" + min(user_id, message_recv_id) + "-" + max(user_id, message_recv_id)
+                    message_group_name = "dm" + "<" + str(min(user_id, message_recv_id)) + "<" + str(max(user_id, message_recv_id))
 
                     # Generate message id
                     async with httpx.AsyncClient() as client:
@@ -136,11 +139,6 @@ async def handler(websocket, server_id):
                             f"{constants.KV_STORE_URL}/api/set", 
                             json=msg_value
                         )
-
-                    if message_recv_id != user_id:
-                        target_ids = [message_recv_id, user_id]
-                    else:
-                        target_ids = [user_id]
 
                     # Subsription format {message_group}>{server_id}>{user_id}>{session_token}
 
@@ -192,7 +190,7 @@ async def handler(websocket, server_id):
         logging.info(f"[-] Cliente desconectado con error: {websocket.remote_address} — {e}")
     finally:
         # Wait for the connection event queue to end
-        await message_queue.put(0)
+        await message_queue.put(None)
         await message_queue.join()
         await task_consumer
         
@@ -223,7 +221,7 @@ async def main(server_id):
 def start_chat_server():
     logging.basicConfig(
         level=logging.INFO,
-        format="%(asctime)s [%(levelname)s] %(message)s"  # Le da un diseño limpio en consola
+        format="%(asctime)s [%(levelname)s] %(message)s"  # Clean disign for console
     )
     
     parser = argparse.ArgumentParser(description="Chat Server")

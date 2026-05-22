@@ -7,3 +7,4 @@ redis_data
 .vscode
 pg-data
 __pycache__
+.venv_vs_code_2
