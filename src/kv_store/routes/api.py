@@ -33,6 +33,7 @@ async def get():
 
     return {"value": value} 
 
+
 @api_bp.route("/delete", methods=["POST"])
 async def delete():
     data = request.get_json()
@@ -45,6 +46,7 @@ async def delete():
     await my_kv_store.close()
 
     return {"status": "Data deleted"} 
+
 
 @api_bp.route("/get_all_with_prefix", methods=["GET"])
 async def get_all_with_prefix():
@@ -60,3 +62,23 @@ async def get_all_with_prefix():
     await my_kv_store.close()
 
     return {"value": answer} 
+
+
+@api_bp.route("/delete_all_with_suffix", methods=["POST"])
+async def delete_all_with_suffix():
+    data = request.get_json()
+
+    if not 'suffix' in data:
+        return  jsonify({"error": "No suffix in data"}), 400
+    
+    # Delete all keys with A sepcific sufix
+    suffix = data['suffix']
+
+    host = current_app.config.get('REDIS_HOST')
+    my_kv_store = RedisKVStore(host) 
+
+    await my_kv_store.delete_all_with_suffix(suffix)
+    await my_kv_store.close()
+
+    return jsonify({"status": "Data deleted"}), 200
+
