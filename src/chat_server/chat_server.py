@@ -202,7 +202,16 @@ async def handler(websocket, server_id):
                 }
             )
         
-        # TODO: Manage user group chat unsubscriptions
+        # Unsubscribe this user connection from all chat subscriptions (That will be of this server)
+        async with httpx.AsyncClient() as client:
+            await client.post(
+                f"{constants.KV_STORE_URL}/api/delete_all_with_prefix_and_suffix", 
+                json=
+                {
+                    "prefix": "usubscription>" 
+                    ,"suffix": f">{session_token}"
+                }
+            )
 
         # Wait for the connection event queue to end
         await message_queue.put(None)

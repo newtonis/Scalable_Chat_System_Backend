@@ -71,18 +71,22 @@ async def test_subscribe_to_conversation(client, valid_token, user_id):
     data = res.json()
     server_id = data["server"]
 
-    # Open websocket connection to mark user as connected to server
-    
+    # Open websocket connection to mark user as connected to serve
     async with websockets.connect(f"{constants.CHAT_SERVERS_URL[server_id]}?token={valid_token}") as websocket:
         logging.info("Connected to websocker with bearer Token")
 
         # Wait for server to mark us as connected
         await asyncio.sleep(2)
 
+        # Verify we are registered as connected in the server
+        res0 = await client.get(
+            f"{constants.KV_STORE_URL}/api/get?key=userver>{user_id}>{valid_token}"
+        )
+        value0 = res0.json()["value"]
+        assert int(value0) == server_id
+
         # Call subscribe endpoint
-
         res = await client.post(f"{constants.COORDINATOR_URL}/api/subscribe_dm", json={"target_user_id": user_id}, headers=headers)
-
         assert res.json()["result"] == "user subscription is complete"
 
         logging.info("User subscription is completed")
@@ -99,6 +103,23 @@ async def test_subscribe_to_conversation(client, valid_token, user_id):
         assert value == 'true'
 
         logging.info("Subscription is verified")
+    
+    # Wait for server to cancel subscription
+    await asyncio.sleep(2)
+
+    # Verify unsubpscrition in database to server and to the conversation
+    response = await client.get(
+        f"{constants.KV_STORE_URL}/api/get?key=usubscription>{message_group}>{server_id}>{user_id}>{valid_token}"
+    )
+    value = response.json()["value"]
+    assert value is None
+
+    response2 = await client.get(
+        f"{constants.KV_STORE_URL}/api/get?key=userver>{user_id}>{valid_token}"
+    )
+    value2 = response2.json()["value"]
+
+    assert value2 is None
 
 
 # Send a Direct Message to Myself
