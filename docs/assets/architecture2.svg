@@ -449,9 +449,9 @@
        style="font-style:normal;font-weight:normal;font-size:40.1947px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect8474);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="25.789062"
          y="227.71532"
-         id="tspan138820"><tspan
+         id="tspan138964"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138818">Coord 1</tspan></tspan></text>
+           id="tspan138962">Coord 1</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.19364306,0,0,0.21968359,95.789335,-30.924198)"
@@ -459,9 +459,9 @@
        style="font-style:normal;font-weight:normal;font-size:40.1947px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect8474-72);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="25.789062"
          y="227.71532"
-         id="tspan138824"><tspan
+         id="tspan138968"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138822">User</tspan></tspan></text>
+           id="tspan138966">User</tspan></tspan></text>
     <rect
        style="fill:none;stroke:#000000;stroke-width:0.358484;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect1282-2-6"
@@ -476,9 +476,9 @@
        style="font-style:normal;font-weight:normal;font-size:40.1947px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect8474-7);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="25.789062"
          y="227.71532"
-         id="tspan138828"><tspan
+         id="tspan138972"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138826">Cserv 1</tspan></tspan></text>
+           id="tspan138970">Cserv 1</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-72.704481,50.759985)"
@@ -486,9 +486,9 @@
        style="font-style:normal;font-weight:normal;font-size:31.3333px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect41404);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="525.46289"
          y="199.10056"
-         id="tspan138832"><tspan
+         id="tspan138976"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138830">Kv Store</tspan></tspan></text>
+           id="tspan138974">Kv Store</tspan></tspan></text>
     <rect
        style="fill:none;stroke:#000000;stroke-width:0.832;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect1282-92-2"
@@ -505,9 +505,9 @@
        style="font-style:normal;font-weight:normal;font-size:31.3333px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect41404-7);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="525.46289"
          y="199.10056"
-         id="tspan138836"><tspan
+         id="tspan138980"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138834">Id gen</tspan></tspan></text>
+           id="tspan138978">Id gen</tspan></tspan></text>
     <ellipse
        style="fill:none;stroke:#000000;stroke-width:1.27125;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path72023"
@@ -1583,9 +1583,9 @@ AElFTkSuQmCC
        style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect100351);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="655.14062"
          y="121.42604"
-         id="tspan138840"><tspan
+         id="tspan138984"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138838">Ws</tspan></tspan></text>
+           id="tspan138982">Ws</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-91.5158,-1.9634553)"
@@ -1593,7 +1593,7 @@ AElFTkSuQmCC
        style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect100351-0);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="655.14062"
          y="121.21286"
-         id="tspan138842">Http</tspan></text>
+         id="tspan138986">Http</tspan></text>
     <image
        width="33.01318"
        height="29.111631"
@@ -2029,24 +2029,24 @@ RU5ErkJggg==
        y="129.94138" />
     <text
        xml:space="preserve"
-       transform="matrix(0.26458333,0,0,0.26458333,102.25431,-70.607629)"
+       transform="matrix(0.26458333,0,0,0.26458333,109.40232,-70.96503)"
        id="text115116-0"
        style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect115118-5);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="38.207031"
          y="795.2444"
-         id="tspan138846"><tspan
+         id="tspan138990"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138844">PostgresDB</tspan></tspan></text>
+           id="tspan138988">PostgresDB</tspan></tspan></text>
     <text
        xml:space="preserve"
-       transform="matrix(0.26458333,0,0,0.26458333,45.771277,-71.365791)"
+       transform="matrix(0.26458333,0,0,0.26458333,45.771277,-70.293589)"
        id="text115116-0-1"
        style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect115118-5-5);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="38.207031"
          y="795.2444"
-         id="tspan138850"><tspan
+         id="tspan138994"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138848">Redis</tspan></tspan></text>
+           id="tspan138992">Redis</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="scale(0.26458333)"

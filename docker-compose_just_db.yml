@@ -1,4 +1,4 @@
-# Docker compose for postgres, redis, kv_store_ms and id_generator_ms
+# Docker compose just for postgres and redis (kv_store) databases
 
 services:
   postgres:
@@ -21,6 +21,7 @@ services:
       - "6379:6379"
     volumes:
       - ./redis_data:/data
+    # Aquí configuramos la persistencia AOF (tipo WAL) y el límite de RAM directo por comandos
     command: >
       redis-server 
       --appendonly yes 
@@ -28,14 +29,3 @@ services:
       --maxmemory-policy allkeys-lru
       --bind 0.0.0.0
       --protected-mode no
-  kv_store_ms:
-    build: /src/kv_store/.
-    restart: always
-    ports: 
-      - "5001:5001"
-  id_generator_ms:
-    build: /src/id_generator/.
-    restart: always
-    ports: 
-      - "5002:5002"
-
