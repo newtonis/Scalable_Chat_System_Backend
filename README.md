@@ -20,7 +20,7 @@ For this excercise we simplified the design to be able to complete it in just da
 
 ![Texto alternativo](docs/assets/architecture2.svg)
 
-## Implementation Details
+## Implementation details
 
 The implementation is with python, using poetry and virtualenvs to handle the dependencies of each service deacoupled from each other. We use flask for the statless endpoints, and asyncio for councurrency (We avoid blocking while waiting for responses or database writes). 
 
@@ -30,9 +30,9 @@ For ease of deployment we added containerization for KV Store and Id Generator. 
 
 The rest of the solution is a Coordinator and a Chat Server. (TODO: Add containerization for these services too). The coordinator has tests for the stateless part of its function, the Chat Server and Coordinator interaction over users usage are tested with integration tests. 
 
-## Data Model
+## Data model
 
-### Kv Store
+### Kv store
 
 TODO
 
@@ -160,7 +160,7 @@ cd ../../..
 mv src/libs/kv_store_lib/dist/* src/kv_store_lib/dist
 ```
 
-### Run Tests
+### Run tests
 
 #### Integration tests
 This tests are important to verify the functionality of the whole system.  We add '-o log_cli=true --log-cli-level=INFO' to enable logging for further test debugging . The test are made incrementing the usage of the system in each one. This test driven development is perfect to design the system deacoupled from fronted (That is not included in this project).
@@ -173,18 +173,22 @@ Note: registration may fail is user already registered but it has no effect and 
 There are three integration tests that are used:
 
 - test_connect_and_disconnect
+
 We test a client to connect to the coordinator, complete register and login, and then make it join the chat server with the same session. Then disconnect. 
 
 - test_subscribe_to_conversation
+
 We test a client to connect to the coordinator, complete register and login, make it join the chat server and then subscribe to a conversation of the same user (It would be the User-User chat). We verify subscription in the kv store database. Then we disconnect and verify unsubscription and user to be disconnected in kv store database.
 
 - test_send_direct_message
+
 We test a client to connect to the coordinator, complete register and login, make it join the chat server, subscribe to a conversation of the same user. We verify subscription and then send a message to the same user (User-User Chat). Then we verify the message is received (As we are subscribed to conversation) and its content
 
 - test_send_peer_message
+
 We test two clients to connect to coordinator, complete register and login. Then we make them join the chat server (and verify the stored kv store connection information) and subscribe to the conversation of these two users. We verify the users subscriptions in kv store database. After we wait for each user to complete the subscription (To avoid race conditions and guarantee sent messages are transmitted as both users are already subscribed) then we make them send a message to its dm channel, and verify the reception of the message of each one. We just log the message count, that should be n, n + 1. when n is the messages send before running the test. To make this test to work we had to make id generator able to handle concurrency of operations and guarantee a different id to be assigned to each message.
 
-#### Unit Tests
+#### Unit tests
 
 
 
