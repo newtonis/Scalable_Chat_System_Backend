@@ -1,6 +1,7 @@
 from flask import Flask
 from routes.api import api_bp
 import argparse
+import logging
 
 app = Flask(__name__)
 
@@ -15,6 +16,11 @@ def index():
 def start_id_generator():
     parser = argparse.ArgumentParser(description="Id generator Api")
     parser.add_argument("postgres_host", type=str, help="postgres host")
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(message)s"  # Clean disign for console
+    )
 
     args = parser.parse_args()
 

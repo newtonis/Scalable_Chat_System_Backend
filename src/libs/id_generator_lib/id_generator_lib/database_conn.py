@@ -56,7 +56,9 @@ class DatabaseConn:
                         message_group_name VARCHAR(50),
                         counter INTEGER,
                         created_at TIME,
-                        updated_at TIME
+                        updated_at TIME,
+                        
+                        CONSTRAINT uq_message_group_name UNIQUE (message_group_name)
                     )
             """
 
