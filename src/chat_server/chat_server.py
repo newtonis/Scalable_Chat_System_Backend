@@ -142,7 +142,8 @@ async def handler(websocket, server_id):
                                 json=
                                 {
                                     "group_name": message_group_name
-                                }
+                                },
+                                headers = {"Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache"}
                             )
                         ## TODO: handle transaction failure (retries or respond error message in case of failure)
 
@@ -169,7 +170,7 @@ async def handler(websocket, server_id):
                         data_subscriptions = response.json()
 
                         for key in data_subscriptions["value"]:
-                            _, _, _, from_id, user_token = key.split(">")
+                            _, _, _, to_id, user_token = key.split(">")
                             data = response.json()
                             if user_token not in clients:
                                 logging.info(f"Subscribed client is not connected to server (Client disconnected without unsubscription or client subscribed and did not connect)")
@@ -177,7 +178,7 @@ async def handler(websocket, server_id):
                                 await clients[user_token].message_queue.put({
                                     "type": "dm"
                                     ,"group": message_group_name
-                                    ,"user_id": from_id
+                                    ,"user_id": user_id
                                     ,"value": message_value
                                     ,"id": message_number
                                 })
@@ -251,7 +252,7 @@ async def main(server_id):
     port = urlparse(server_url).port
 
     logging.info(f"WebSocket running on ws://{host}:{port}")
-    logging.info(f"Waiting for connections conexiones... (Ctrl+C to stop)\n")
+    logging.info(f"Waiting for connections ... (Ctrl+C to stop)\n")
 
     # Handler with server id variable embeeded
     async def handler_with_server_id(websocket):

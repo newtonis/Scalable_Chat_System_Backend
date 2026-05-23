@@ -39,6 +39,24 @@ def user_id(login_result):
     return login_result.json()["id"]
 
 
+@pytest.fixture
+async def func_register_and_login_new_user():
+    async def register_and_login_user(client):
+        credenciales = {"email": f"random@email{random.randrange(200)}.com", "password": str(random.randrange(1000)), "name": f"foo {random.randrange(200)}"}
+        await client.post(f"{constants.COORDINATOR_URL}/auth/register", json=credenciales)
+        res = await client.post(f"{constants.COORDINATOR_URL}/auth/login", json=credenciales)
+        
+        logging.info(f"Logging result: {res}")
+
+        id = res.json()["id"]
+        name = credenciales["name"]
+        token = res.json()["token"]
+        logging.info(f"New user information {id}>{name}>{token}")
+        return id, name, token
+    
+    return register_and_login_user
+
+
 @pytest.mark.asyncio
 async def test_connect_and_disconnect(client, valid_token, user_id):
     headers = {"Authorization": f"Bearer {valid_token}"}
@@ -171,4 +189,108 @@ async def test_send_direct_message(client, valid_token, user_id):
         assert rta_json["message"]["value"] == 'test message' and int(rta_json["message"]["user_id"]) == user_id and rta_json["message"]["type"] == "dm"
 
 
+# Send a Direct Message to Myself
+@pytest.mark.asyncio
+async def test_send_peer_message(client, func_register_and_login_new_user):
 
+    id1, name1, token1 = await func_register_and_login_new_user(client)
+    id2, name2, token2 = await func_register_and_login_new_user(client)
+
+    ## Join client 1 to server
+    headers1 = {"Authorization": f"Bearer {token1}"}
+    res1 = await client.get(f"{constants.COORDINATOR_URL}/api/join_server", headers=headers1)
+    assert res1.status_code == 200
+    data1 = res1.json()
+    server_id_1 = data1["server"]
+
+    ## Join client 2 to server
+    headers2 = {"Authorization": f"Bearer {token2}"}
+    res2 = await client.get(f"{constants.COORDINATOR_URL}/api/join_server", headers=headers2)
+    assert res2.status_code == 200
+    data2 = res2.json()
+    server_id_2 = data2["server"]
+    
+
+    async def task_message(task_number, from_id, to_id, token, headers, server_id, my_event, other_event):
+        async with websockets.connect(f"{constants.CHAT_SERVERS_URL[server_id]}?token={token}") as websocket:
+            logging.info(f"[Task {task_number}] Connected to websocket with bearer Token")
+
+            # Wait for server to mark us as connected
+            await asyncio.sleep(2)
+            
+            logging.info(f"subscription data: {from_id}, {token}")
+            # Verify we are registered as connected in the server
+            res0 = await client.get(
+                f"{constants.KV_STORE_URL}/api/get?key=userver>{from_id}>{token}"
+            )
+            value0 = res0.json()["value"]
+            assert int(value0) == server_id
+
+            # Subscribe to dms with uthe other user
+            res = await client.post(f"{constants.COORDINATOR_URL}/api/subscribe_dm", json={"target_user_id": to_id}, headers=headers)
+            assert res.json()["result"] == "user subscription is complete"
+
+            # Send signal to other task that subscription is completed
+            other_event.set()
+            # Wait for the other task to complete subscription
+            await my_event.wait()
+
+            data_package = {
+                'command': 'new_message',
+                    'message': {
+                        'type': 'dm'
+                        ,'user_id': to_id
+                        ,'value': f'Hello from user {from_id}'
+                    }
+                }
+        
+            msg = json.dumps(data_package)
+            await websocket.send(msg)
+
+            # Wait for self message and task2 message. Order can be any
+            answer1 = await websocket.recv()
+            answer2 = await websocket.recv()
+
+            json1 = json.loads(answer1)
+            json2 = json.loads(answer2)
+
+            # Verify commands received are new messages indeed
+            assert json1["command"] == "new_message"
+            assert json2["command"] == "new_message"
+
+            logging.info(f'[Task {task_number}] First recv message id: {json1["message"]["id"]}')
+            logging.info(f'[Task {task_number}] First message from: {json1["message"]["user_id"] }')
+            logging.info(f'[Task {task_number}] First message content: {json1["message"]["value"] }')
+
+            logging.info(f'[Task {task_number}] Second recv Message id: {json2["message"]["id"]}')
+            logging.info(f'[Task {task_number}] Second message from: {json2["message"]["user_id"] }')
+            logging.info(f'[Task {task_number}] Second message content: {json2["message"]["value"] }')
+            
+            m_by_uid = {}
+            
+            m_by_uid[int(json1["message"]["user_id"])] = json1
+            m_by_uid[int(json2["message"]["user_id"])] = json2
+
+            my_package = m_by_uid[from_id]
+            peer_package = m_by_uid[to_id]
+
+            my_message = my_package["message"]
+            peer_message = peer_package["message"]
+
+            assert my_message["value"] == f'Hello from user {from_id}' and my_message["user_id"] == from_id and my_message["type"] == "dm"
+            assert peer_message["value"] == f'Hello from user {to_id}' and peer_message["user_id"] == to_id and peer_message["type"] == "dm"
+    
+    try:
+        ev1 = asyncio.Event()
+        ev2 = asyncio.Event()
+
+        await asyncio.wait_for(
+            asyncio.gather(
+                task_message(1, id1, id2, token1, headers1, server_id_1, ev1, ev2),
+                task_message(2, id2, id1, token2, headers2, server_id_2, ev2, ev1)
+            ), 
+            timeout=500
+        )
+    except asyncio.TimeoutError:
+        logging.info("Task timeout (10 seconds)")
+    
