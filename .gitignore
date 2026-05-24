@@ -8,3 +8,4 @@ redis_data
 pg-data
 __pycache__
 .venv_vs_code_2
+.ruff_cache
