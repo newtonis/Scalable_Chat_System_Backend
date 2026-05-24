@@ -12,9 +12,9 @@ from utils.users import user_registrator
 import random
 
 
+# Test client with clean database on each test
 @pytest.fixture
-def client():
-    # Test client with clean database on each test
+def client(): 
     app.config["TESTING"] = True
     app.config["JWT_SECRET_KEY"] = "1234"
 
@@ -23,24 +23,22 @@ def client():
     with app.test_client() as client:
         yield client
 
-
+# Register user with its password
 @pytest.fixture
 def usuario_registrado(client):
-    # Register user with its password
     credenciales = {"email": "test@example.com", "password": "1234", "name": "test"}
     client.post("/auth/register", json=credenciales)
     return credenciales
 
-
+# Get validated token
 @pytest.fixture
 def token_valido(client, usuario_registrado):
-    # Get validated token
     res = client.post("/auth/login", json=usuario_registrado)
     
     return res.get_json()["token"]
 
 @pytest.fixture
-def user_id(client, token_valido):
+def user_id(token_valido):
     payload = jwt.decode(
         token_valido,
         app.config["JWT_SECRET_KEY"],
@@ -65,6 +63,7 @@ def func_register_and_login_new_user():
     return register_and_login_user
 
 
+# Verifies that the registration endpoint creates a new user and returns status 201.
 def test_register(client):
     res = client.post("/auth/register", json={
         "email": "nuevo@example.com",
@@ -77,12 +76,14 @@ def test_register(client):
     assert "id" in data
 
 
+# Validates that login works with registered credentials and returns a JWT token.
 def test_login(client, usuario_registrado):
     res = client.post("/auth/login", json=usuario_registrado)
     assert res.status_code == 200
     assert "token" in res.get_json()
 
 
+# Checks protected access to the profile route using a valid JWT token.
 def test_query_perfil(client, token_valido):
     res = client.get("/api/perfil", headers={
         "Authorization": f"Bearer {token_valido}"
@@ -92,6 +93,7 @@ def test_query_perfil(client, token_valido):
     assert data["mensaje"] == "Ruta protegida"
 
 
+# Registers three distinct users and verifies that the total user list includes them.
 def test_register_three_users_and_check_existance(client, func_register_and_login_new_user):
     id1, name1, token1 = func_register_and_login_new_user(client)
     id2, name2, token2 = func_register_and_login_new_user(client)
@@ -114,6 +116,7 @@ def test_register_three_users_and_check_existance(client, func_register_and_logi
     assert users[str(id3)] == name3
 
 
+# Requests a chat server and verifies that the returned value is a valid index.
 def test_join_server(client, token_valido, user_id):
     res = client.get("/api/join_server", headers={
         "Authorization": f"Bearer {token_valido}"
@@ -125,8 +128,8 @@ def test_join_server(client, token_valido, user_id):
     assert data["server"] >= 0 and data["server"] < len(constants.CHAT_SERVERS_URL)
 
 
+# Validates that a chat server can be obtained and that a WebSocket connection can be made with the JWT token.
 def test_server_connection(client, token_valido, user_id):
-    # Conect client to server
     headers = {"Authorization": f"Bearer {token_valido}"}
 
     res = client.get("/api/join_server", headers=headers)

@@ -14,7 +14,7 @@ def database_conn():
         db_conn.close_connection()
 
 
-# Generate a single count of a group
+# Verifies that a valid ID is generated for a new message group.
 def test_generate_single_id(database_conn):
 
     postgres_id_generator = PostgresIdGenerator(database_conn)
@@ -24,7 +24,7 @@ def test_generate_single_id(database_conn):
     assert result["status"] == "id_generated"
 
 
-# Generate multiple increments of the group
+# Verifies that ID generation for the same group increments correctly by 1.
 def test_increment_id(database_conn):
 
     postgres_id_generator = PostgresIdGenerator(database_conn)

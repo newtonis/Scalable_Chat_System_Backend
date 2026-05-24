@@ -8,7 +8,7 @@ Not only the complex design would be need in that case but also a cloud service 
 
 ## Ideal design
 
-The ideal design proposed was made with microservices as the following: a group of stateless coordinator servers interact with the users with HTTP. A load balancer distributes the load of users over the different servers interfaced as a service. This servers interact with other three services, a Login, a KV Store (For messages, connection and subscription information using a cache) and an Id generator (To generate messages ids with a relational database). Login, KV Store and Id Generator are decoupled from coordinator and chat servers, to ensure they could be scaled further (Althogh we didn't include it directly in this designu). Also we could also add deacoupled presence servers to handle users connection and disconnection lifecylces (We also didn't include it). Last but not least, we could add a message broker (such as redis) to handle the message queue between chat servers.
+The ideal design proposed was made with microservices as the following: a group of stateless coordinator servers interact with the users with HTTP. A load balancer distributes the load of users over the different servers interfaced as a service. This servers interact with other three services, a Login, a KV Store (For messages, connection and subscription information using a cache) and an Id generator (To generate messages ids with a relational database). Login, KV Store and Id Generator are decoupled from coordinator and chat servers, to ensure they could be scaled further (Althogh we didn't include it directly in this designu). Also we could also add deacoupled presence servers to handle users connection and disconnection lifecylces (We also didn't include it) and add end to end encription to messages. Last but not least, we could add a message broker (such as redis) to handle the message queue between chat servers.
 
 The criteria was so to divide the responsability in microservices to allow a scalable system. This complexity is only worth if the number of users is high enough otherwise the maintenance cost would be too high for the return.
 
@@ -16,7 +16,7 @@ The criteria was so to divide the responsability in microservices to allow a sca
 
 ## What we included in this design implementation
 
-For this excercise we simplified the design to be able to complete it in just days of work. But it could be easily upgraded if necesary as it is built scalable. We used just one coordinator, one chat server, and the login system was mocked as a memory database without persistence. Also we didn't include persistence servers or group chats. We just made the system to be able for connected users to send DMs and subscribe to that DMs conversations. A method to ask for old conversations could be easily made to handle user syncronization with old messages.
+For this excercise we simplified the design to be able to complete it in just days of work. But it could be easily upgraded if necesary as it is built scalable. We used just one coordinator, one chat server, and the login system was mocked as a memory database without persistence. Also we didn't include persistence servers or group chats. We just made the system to be able for connected users to send DMs and subscribe to that DMs conversations. A method to ask for old conversations could be made to handle user syncronization with old messages.
 
 ![Texto alternativo](docs/assets/architecture2.svg)
 
@@ -160,9 +160,9 @@ cd ../../..
 mv src/libs/kv_store_lib/dist/* src/kv_store_lib/dist
 ```
 
-### Run tests
+## Run tests
 
-#### Integration tests
+### Integration tests
 This tests are important to verify the functionality of the whole system.  We add '-o log_cli=true --log-cli-level=INFO' to enable logging for further test debugging . The test are made incrementing the usage of the system in each one. This test driven development is perfect to design the system deacoupled from fronted (That is not included in this project).
 
 ```bash
@@ -173,96 +173,65 @@ Note: registration may fail is user already registered but it has no effect and 
 There are three integration tests that are used:
 
 - test_connect_and_disconnect
-
-We test a client to connect to the coordinator, complete register and login, and then make it join the chat server with the same session. Then disconnect. 
-
 - test_subscribe_to_conversation
-
-We test a client to connect to the coordinator, complete register and login, make it join the chat server and then subscribe to a conversation of the same user (It would be the User-User chat). We verify subscription in the kv store database. Then we disconnect and verify unsubscription and user to be disconnected in kv store database.
-
 - test_send_direct_message
-
-We test a client to connect to the coordinator, complete register and login, make it join the chat server, subscribe to a conversation of the same user. We verify subscription and then send a message to the same user (User-User Chat). Then we verify the message is received (As we are subscribed to conversation) and its content
-
 - test_send_peer_message
 
-We test two clients to connect to coordinator, complete register and login. Then we make them join the chat server (and verify the stored kv store connection information) and subscribe to the conversation of these two users. We verify the users subscriptions in kv store database. After we wait for each user to complete the subscription (To avoid race conditions and guarantee sent messages are transmitted as both users are already subscribed) then we make them send a message to its dm channel, and verify the reception of the message of each one. We just log the message count, that should be n, n + 1. when n is the messages send before running the test. To make this test to work we had to make id generator able to handle concurrency of operations and guarantee a different id to be assigned to each message.
 
-#### Unit tests
+### Unit tests
+This tests verify the functionality of each module.
 
-
-
-```bash
-pip install -r requirements.txt
-```
-
-## Ejecutar el servidor
+#### Kv Store Lib
+To run test of kv store lib you need to run the redis DB docker compose separately. There is a docker-compose.yml in the folder.
 
 ```bash
-python app.py
+cd src/libs/kv_store_lib
+pytest tests/test_kv_store.py -o log_cli=true --log-cli-level=INFO
 ```
 
-## Endpoints
+#### Id generator Lib
+To run test of kv store lib you need to run the redis DB docker compose separately. There is a docker-compose.yml in the folder.
 
-### Públicos
-
-| Método | Ruta             | Descripción         |
-|--------|------------------|---------------------|
-| GET    | `/`              | Health check        |
-| POST   | `/auth/register` | Registrar usuario   |
-| POST   | `/auth/login`    | Login → devuelve token |
-
-### Protegidos (requieren `Authorization: Bearer <token>`)
-
-| Método | Ruta          | Descripción              |
-|--------|---------------|--------------------------|
-| GET    | `/api/perfil` | Retorna datos del usuario |
-
-## Ejemplo de uso
-
-### Registrar usuario
 ```bash
-curl -X POST http://localhost:5000/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"email": "user@example.com", "password": "1234"}'
+cd src/libs/id_generator_lib
+pytest tests/test_id_generator.py -o log_cli=true --log-cli-level=INFO
 ```
 
-### Login
+#### Coordinator
+To run test of coordinator you need to run the redis DB docker compose separately. There is a docker-compose.yml in the folder.
+
 ```bash
-curl -X POST http://localhost:5000/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email": "user@example.com", "password": "1234"}'
+cd src/coordinator
+pytest tests/test_id_generator.py -o log_cli=true --log-cli-level=INFO
 ```
 
-### Usar ruta protegida
-```bash
-curl http://localhost:5000/api/perfil \
-  -H "Authorization: Bearer <tu_token>"
-```
+#### Test List
 
-## Kv Store library install
+The project currently includes the following test cases:
 
-Build kv store library and copy to kv store service folder 
+- src/intergated_tests/tests/test_messages.py
+  - test_connect_and_disconnect
+  - test_subscribe_to_conversation
+  - test_send_direct_message
+  - test_send_peer_message
 
-poetry build -P src/libs/kv_store_lib
-mv src/libs/kv_store_lib/dist/* src/kv_store/dist
-rm -d src/libs/kv_store_lib/dist
+- src/coordinator/tests/test_coordinator.py
+  - test_register
+  - test_login
+  - test_query_perfil
+  - test_register_three_users_and_check_existance
+  - test_join_server
+  - test_server_connection
 
-## Run KV Store
+- src/libs/id_generator_lib/tests/test_id_generator.py
+  - test_generate_single_id
+  - test_increment_id
 
-cd src/kv_store
-python -m venv .venv
-source .venv/bin/activate
-poetry install
-start_kv_store
-
-## Id generator library install
-
-
-
-
-## Run tests with info logs enabled
-pytest tests -o log_cli=true --log-cli-level=INFO
-## Logs command
-
-pytest tests/test_messages.py::test_send_direct_message -o log_cli=true --log-cli-level=INFO
+- src/libs/kv_store_lib/tests/test_kv_store.py
+  - test_save_and_read
+  - test_replace_stored_value
+  - test_two_keys
+  - test_create_and_delete_key
+  - test_query_prefix
+  - test_query_delete_with_suffix
+  - test_query_delete_with_prefix_and_suffix

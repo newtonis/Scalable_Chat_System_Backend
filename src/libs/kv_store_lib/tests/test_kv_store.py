@@ -4,6 +4,7 @@ import asyncio
 
 
 
+# Verifies that a saved value can be read back from the Redis key-value store.
 def test_save_and_read():
     async def get_value():
         kv_store = RedisKVStore("localhost") 
@@ -18,6 +19,7 @@ def test_save_and_read():
     assert value == "My Value"
 
 
+# Verifies that setting the same key multiple times replaces its stored value.
 def test_replace_stored_value():
 
     async def get_value_2():
@@ -38,6 +40,7 @@ def test_replace_stored_value():
     assert value == "My Value 3"
 
 
+# Verifies that multiple keys can be stored and retrieved independently.
 def test_two_keys():
 
     async def test_two_keys_f():
@@ -61,6 +64,7 @@ def test_two_keys():
     assert value1 == "My Value 1" and value2 == "My Value 2"
 
 
+# Verifies that a key can be created and deleted, and that deleted keys return None.
 def test_create_and_delete_key():
     async def test_create_and_delete_key():
         kv_store = RedisKVStore("localhost")
@@ -83,6 +87,7 @@ def test_create_and_delete_key():
     assert value1 == "My value A" and value2 == None
 
 
+# Verifies that keys can be queried by prefix and all matching values are returned.
 def test_query_prefix():
     async def test_query_prefix():
         kv_store = RedisKVStore("localhost")
@@ -112,6 +117,7 @@ def test_query_prefix():
     assert answer["Test345GR Key Ia1"] == "My value C"
 
 
+# Verifies that keys with a specific suffix can be deleted and other keys remain intact.
 def test_query_delete_with_suffix():
     async def write_keys():
         kv_store = RedisKVStore("localhost")
@@ -156,6 +162,7 @@ def test_query_delete_with_suffix():
     assert v1_ is None and v2_ is None and v3_ is None and v4_ == "My value D"
 
 
+# Verifies combined prefix and suffix delete operations maintain correct key behavior.
 def test_query_delete_with_prefix_and_suffix():
      
     async def write_keys():
