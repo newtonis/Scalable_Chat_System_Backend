@@ -286,6 +286,6 @@ The project currently includes the following test cases:
   - `test_query_delete_with_suffix`
   - `test_query_delete_with_prefix_and_suffix`
 
-## Linters
+## Pre commit hooks
 
-The linters used are ruff and pylint
+The project use pre commit hooks to ensure code quality. The file `pre-commit-config.yaml` has the configuration (Currently black, ruff and isort are activated)
