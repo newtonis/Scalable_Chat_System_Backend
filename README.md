@@ -277,7 +277,7 @@ The project currently includes the following test cases:
   - `test_generate_single_id`
   - `test_increment_id`
 
-- `src/libs/kv_store_lib/tests/test_kv_store.pypp`
+- `src/libs/kv_store_lib/tests/test_kv_store.py`
   - `test_save_and_read`
   - `test_replace_stored_value`
   - `test_two_keys`
