@@ -13,6 +13,7 @@ repos:
       - id: ruff
         args: [ --fix ]
 
+  # Black
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2
     hooks:
