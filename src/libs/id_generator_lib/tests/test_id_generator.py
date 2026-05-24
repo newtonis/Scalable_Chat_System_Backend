@@ -34,4 +34,7 @@ def test_increment_id(database_conn):
     result2 = postgres_id_generator.generate_new_id(f"Test msg group {code}")
     result3 = postgres_id_generator.generate_new_id(f"Test msg group {code}")
 
-    assert result1["result"] + 1 == result2["result"] and result2["result"] + 1 == result3["result"]
+    assert (
+        result1["result"] + 1 == result2["result"]
+        and result2["result"] + 1 == result3["result"]
+    )

@@ -1,4 +1,3 @@
-
 # Generate a new id for a specific message group.
 # If the message group is new then id will start form 0
 
@@ -31,9 +30,7 @@ class PostgresIdGenerator:
         except psycopg2.errors.LockNotAvailable:
             logging.info("Transaction in confict, cancelled")
             self.conn.rollback()
-            return {
-                "status": "failed_txn (select counter)"
-            }
+            return {"status": "failed_txn (select counter)"}
 
         fila = self.cursor.fetchone()
 
@@ -58,10 +55,8 @@ class PostgresIdGenerator:
             except psycopg2.errors.LockNotAvailable:
                 logging.info("Transaction in confict, cancelled")
                 self.conn.rollback()
-                return {
-                    "status": "failed_txn (insert into message groups)"
-                }
-        
+                return {"status": "failed_txn (insert into message groups)"}
+
         command = f"""
             UPDATE 
                 message_groups
@@ -77,14 +72,9 @@ class PostgresIdGenerator:
             self.cursor.execute(command)
             self.conn.commit()
             logging.info("Transaccion completada")
-        except psycopg2.DatabaseError as e:
+        except psycopg2.DatabaseError:
             logging.info("Transaccion en conflicto, cancelada")
-            self.conn.rollback() # Declare for psycopg2 transaction failed
-            return {
-                "status": "failed_txn (insert/update counter)"
-            }
+            self.conn.rollback()  # Declare for psycopg2 transaction failed
+            return {"status": "failed_txn (insert/update counter)"}
 
-        return {   
-            "status": "id_generated",
-            "result": answer
-        }
+        return {"status": "id_generated", "result": answer}

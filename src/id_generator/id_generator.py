@@ -15,11 +15,13 @@ def index():
 
 def start_id_generator():
     parser = argparse.ArgumentParser(description="Id generator Api")
-    parser.add_argument("postgres_host", type=str, help="postgres host", default="localhost")
+    parser.add_argument(
+        "postgres_host", type=str, help="postgres host", default="localhost"
+    )
 
     logging.basicConfig(
         level=logging.INFO,
-        format="%(asctime)s [%(levelname)s] %(message)s"  # Clean disign for console
+        format="%(asctime)s [%(levelname)s] %(message)s",  # Clean disign for console
     )
 
     args = parser.parse_args()
@@ -27,4 +29,3 @@ def start_id_generator():
     app.config["POSTGRES_HOST"] = args.postgres_host
 
     app.run(host="0.0.0.0", debug=True, port=5002)
-

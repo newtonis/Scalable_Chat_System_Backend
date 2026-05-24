@@ -1,9 +1,8 @@
-import asyncio
 import redis.asyncio as aioredis
-import logging
 
 # Approach for kv store: simple redis database to handle cache strategy
 # for data persistence
+
 
 class RedisKVStore:
     def __init__(self, host):
@@ -18,7 +17,7 @@ class RedisKVStore:
 
     async def delete(self, key: str):
         await self.r.delete(f"{key}:100")
-    
+
     async def get_all_with_prefix(self, prefix: str):
         async for key in self.r.scan_iter(match=f"{prefix}*", count=100):
             value = await self.r.get(key)
@@ -31,8 +30,6 @@ class RedisKVStore:
     async def delete_all_with_prefix_and_suffix(self, prefix: str, suffix: str):
         async for key in self.r.scan_iter(match=f"{prefix}*{suffix}:100", count=100):
             await self.r.unlink(key)
-    
+
     async def close(self):
         await self.r.aclose()
-
-      

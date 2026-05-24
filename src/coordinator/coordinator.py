@@ -21,15 +21,16 @@ def index():
 
 def start_coordinator():
     parser = argparse.ArgumentParser(description="Coordinator Api")
-    parser.add_argument("kv_store_host", type=str, help="Kv store host", default="localhost")
+    parser.add_argument(
+        "kv_store_host", type=str, help="Kv store host", default="localhost"
+    )
 
     args = parser.parse_args()
-    
+
     app.config["KV_STORE_URL"] = constants.KV_STORE_URL.format(host=args.kv_store_host)
 
     logging.basicConfig(
         level=logging.INFO,
-        format="%(asctime)s [%(levelname)s] %(message)s"  # Clean design for console
+        format="%(asctime)s [%(levelname)s] %(message)s",  # Clean design for console
     )
     app.run(host="0.0.0.0", debug=True, port=5000)
-

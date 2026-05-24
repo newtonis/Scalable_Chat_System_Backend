@@ -1,54 +1,47 @@
 from flask import Blueprint, jsonify, request, current_app
 from utils.jwt_helper import token_required
-import random
-import asyncio
 import httpx
-from utils import constants, users
 from utils.users import user_registrator
 import logging
 
 
 protected_bp = Blueprint("protected", __name__)
 
+
 # Join to the more convenient socket server
 @protected_bp.route("/join_server", methods=["GET"])
 @token_required
 async def join_server():
-    # Random criteria, 
+    # Random criteria,
     # Better option: replace with regional criteria
-    
-    #server_to_join = constants.CHAT_SERVERS_URL[random.randrange(len(constants.CHAT_SERVERS_URL))]
-    server_to_join = 0 # Join to server of id 0
-        
-    return jsonify({
-        "server": server_to_join
-    }), 200 
+
+    # server_to_join = constants.CHAT_SERVERS_URL[random.randrange(len(constants.CHAT_SERVERS_URL))]
+    server_to_join = 0  # Join to server of id 0
+
+    return jsonify({"server": server_to_join}), 200
+
 
 # Get total users (To be able to know who to send messages)
 @protected_bp.route("/get_total_users", methods=["GET"])
 @token_required
 async def get_total_users():
-    return jsonify({"users":
-        user_registrator.get_all_users()
-    }) , 200 
+    return jsonify({"users": user_registrator.get_all_users()}), 200
 
 
 # Subscribe to a dm conversation
 @protected_bp.route("/subscribe_dm", methods=["POST"])
 @token_required
 async def subscribe_dm():
-    KV_STORE_URL = current_app.config.get('KV_STORE_URL')
+    KV_STORE_URL = current_app.config.get("KV_STORE_URL")
 
     data = request.get_json()
-    if not "target_user_id" in data:
+    if "target_user_id" not in data:
         logging.info("No target user id in data")
 
-        return jsonify({"result":
-            "No target user in package"
-        }) , 400 
+        return jsonify({"result": "No target user in package"}), 400
     logging.info(request.user_id)
     # TODO: Validate that the target user id is valid (exists in the system)
-    
+
     target_user_id = int(data["target_user_id"])
 
     user_id = int(request.user_id)
@@ -65,26 +58,26 @@ async def subscribe_dm():
     logging.info(f"Response from kv store for server number: {data}")
 
     server_id = data["value"]
-    message_group = "dm" + "<" + str(min(user_id, target_user_id)) + "<" + str(max(user_id, target_user_id))
+    message_group = (
+        "dm"
+        + "<"
+        + str(min(user_id, target_user_id))
+        + "<"
+        + str(max(user_id, target_user_id))
+    )
     session_token = request.token
 
     subscription_info = {
-        "key": f"usubscription>{message_group}>{server_id}>{user_id}>{session_token}"
-        ,"value": 'true'
+        "key": f"usubscription>{message_group}>{server_id}>{user_id}>{session_token}",
+        "value": "true",
     }
     logging.info(f"DM Subscription to complete: {subscription_info}")
 
     async with httpx.AsyncClient() as client:
-        await client.post(
-            f"{KV_STORE_URL}/api/set", 
-            json=subscription_info
-        )
+        await client.post(f"{KV_STORE_URL}/api/set", json=subscription_info)
     logging.info("Subscription completed")
 
-
-    return jsonify({"result":
-        "user subscription is complete"
-    }) , 200  
+    return jsonify({"result": "user subscription is complete"}), 200
 
 
 # Subscribe to a group conversation
@@ -93,11 +86,13 @@ async def subscribe_dm():
 async def subscribe_group():
     return jsonify({"error": "Not implemented"}), 501
 
+
 # Get specific dm messages
 @protected_bp.route("/get_dm_messages", methods=["GET"])
 @token_required
 async def get_dm_messages():
     return jsonify({"error": "Not implemented"}), 501
+
 
 # Get specific group messages
 @protected_bp.route("/get_group_messages", methods=["GET"])
@@ -105,9 +100,9 @@ async def get_dm_messages():
 async def get_group_messages():
     return jsonify({"error": "Not implemented"}), 501
 
+
 # Delete a chat (Only the owner can delete the chat)
 @protected_bp.route("/delete_chat", methods=["POST"])
 @token_required
 async def delete_chat():
     return jsonify({"error": "Not implemented"}), 501
-
