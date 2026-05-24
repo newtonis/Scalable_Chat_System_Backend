@@ -54,30 +54,6 @@ All protected endpoints require a valid JWT token in the request headers.
 
 Base path: `/api`
 
-### Get User Profile
-- **Route:** `GET /perfil`
-- **Protected:** Yes
-- **Description:** Get the profile information of the authenticated user
-- **Response (200):**
-  ```json
-  {
-    "mensaje": "Ruta protegida",
-    "user_id": <user_id>
-  }
-  ```
-
-### Get User State
-- **Route:** `GET /get_user_state`
-- **Protected:** Yes
-- **Description:** Get the current state of the authenticated user (connected server and open conversation)
-- **Response (200):**
-  ```json
-  {
-    "mensaje": "Ruta protegida",
-    "user_id": <user_id>
-  }
-  ```
-
 ### Join Server
 - **Route:** `GET /join_server`
 - **Protected:** Yes

@@ -10,24 +10,6 @@ import logging
 
 protected_bp = Blueprint("protected", __name__)
 
-# Test of  protected endpoint
-@protected_bp.route("/perfil", methods=["GET"])
-@token_required
-async def perfil():
-    return jsonify({
-        "mensaje": "Ruta protegida",
-        "user_id": request.user_id
-    }), 200
-
-# Get the client server (if it is connected, and the open conversation)
-@protected_bp.route("/get_user_state", methods=["GET"])
-@token_required
-async def get_user_state():
-    return jsonify({
-        "mensaje": "Ruta protegida",
-        "user_id": request.user_id
-    }), 200 
-
 # Join to the more convenient socket server
 @protected_bp.route("/join_server", methods=["GET"])
 @token_required
@@ -65,6 +47,8 @@ async def subscribe_dm():
             "No target user in package"
         }) , 400 
     logging.info(request.user_id)
+    # TODO: Validate that the target user id is valid (exists in the system)
+    
     target_user_id = int(data["target_user_id"])
 
     user_id = int(request.user_id)
