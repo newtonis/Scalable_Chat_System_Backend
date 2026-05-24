@@ -11,7 +11,7 @@ from utils import constants
 
 @pytest.fixture
 async def client():
-    return httpx.AsyncClient()
+    return httpx.AsyncClient(timeout=10.0)
 
 
 @pytest.fixture

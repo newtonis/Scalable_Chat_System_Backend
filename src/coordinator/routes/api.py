@@ -50,7 +50,7 @@ async def subscribe_dm():
     # Get which server user is connected, so we subscribe the user to the group in the corresponding server
     # For now the server is always 0
 
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=10.0) as client:
         response = await client.get(
             f"{KV_STORE_URL}/api/get?key=userver>{user_id}>{session_token}",
         )
@@ -67,7 +67,7 @@ async def subscribe_dm():
     }
     logging.info(f"DM Subscription to complete: {subscription_info}")
 
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=10.0) as client:
         await client.post(f"{KV_STORE_URL}/api/set", json=subscription_info)
     logging.info("Subscription completed")
 

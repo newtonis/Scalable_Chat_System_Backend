@@ -78,7 +78,7 @@ async def handler(websocket, server_context):
     logging.info("[+] Client authenticated")
 
     # Register user connection as connected in the corresponding selected server
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=10.0) as client:
         await client.post(
             f"{server_context.kv_store_url}/api/set",
             json={
@@ -138,7 +138,7 @@ async def handler(websocket, server_context):
                         logging.info(message_group_name)
 
                         # Generate message id
-                        async with httpx.AsyncClient() as client:
+                        async with httpx.AsyncClient(timeout=10.0) as client:
                             res = await client.post(
                                 f"{server_context.id_generator_url}/api/generate_id",
                                 json={"group_name": message_group_name},
@@ -153,13 +153,13 @@ async def handler(websocket, server_context):
                         message_group = f"dm_message>{message_group_name}>{message_number}"
                         msg_value = {"key": message_group, "value": message_value}
                         # Persist message in KV Store
-                        async with httpx.AsyncClient() as client:
+                        async with httpx.AsyncClient(timeout=10.0) as client:
                             await client.post(f"{server_context.kv_store_url}/api/set", json=msg_value)
 
                         # Subsription format {message_group}>{server_id}>{user_id}>{session_token}
 
                         # Check group subscription users in this server
-                        async with httpx.AsyncClient() as client:
+                        async with httpx.AsyncClient(timeout=10.0) as client:
                             response = await client.get(
                                 f"{server_context.kv_store_url}/api/get_all_with_prefix?prefix=usubscription>{message_group_name}>{server_context.server_id}"
                             )
@@ -211,14 +211,14 @@ async def handler(websocket, server_context):
         logging.info(f"[-] Cliente desconectado con error: {websocket.remote_address} — {e}")
     finally:
         # Register user disconnection in the corresponding selected server
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=10.0) as client:
             await client.post(
                 f"{server_context.kv_store_url}/api/delete",
                 json={"key": f"userver>{user_id}>{session_token}"},
             )
 
         # Unsubscribe this user connection from all chat subscriptions (That will be of this server)
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=10.0) as client:
             await client.post(
                 f"{server_context.kv_store_url}/api/delete_all_with_prefix_and_suffix",
                 json={"prefix": "usubscription>", "suffix": f">{session_token}"},
