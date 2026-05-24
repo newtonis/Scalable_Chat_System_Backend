@@ -4,6 +4,5 @@ CHAT_SERVERS_URL = [
     # "ws://0.0.0.0:5005"
 ]
 
-KV_STORE_URL = "http://localhost:5001"
-ID_GENERATOR_URL = "http://localhost:5002"
-COORDINATOR_URL = "http://localhost:5000"
+KV_STORE_URL = "http://{host}:5001"
+ID_GENERATOR_URL = "http://{host}:5002"

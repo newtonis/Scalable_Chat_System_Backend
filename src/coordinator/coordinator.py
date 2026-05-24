@@ -1,7 +1,10 @@
 from flask import Flask
 from routes.auth import auth_bp
 from routes.api import protected_bp
+import constants
+
 import logging
+import argparse
 
 
 app = Flask(__name__)
@@ -17,9 +20,16 @@ def index():
 
 
 def start_coordinator():
+    parser = argparse.ArgumentParser(description="Coordinator Api")
+    parser.add_argument("kv_store_host", type=str, help="Kv store host")
+
+    args = parser.parse_args()
+    
+    app.config["KV_STORE_URL"] = constants.KV_STORE_URL.format(host=args.kv_store_host)
+
     logging.basicConfig(
         level=logging.INFO,
-        format="%(asctime)s [%(levelname)s] %(message)s"  # Clean disign for console
+        format="%(asctime)s [%(levelname)s] %(message)s"  # Clean design for console
     )
-    app.run(debug=True, port=5000)
+    app.run(host="0.0.0.0", debug=True, port=5000)
 
