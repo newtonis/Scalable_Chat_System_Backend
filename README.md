@@ -26,9 +26,9 @@ The implementation is with python, using poetry and virtualenvs to handle the de
 
 The solution is just a backend, so we rely heavily on tests to verify the functionality. We used two kind of tests, unity tests and integration tests (Using pytest). The system could work with any front end that handle the protocol used in the integration tests. 
 
-For ease of deployment we added containerization for KV Store and Id Generator. This modules also had dedicated python libraries, kv_store_lib and id_generator_lib and this we we separated the servers implementation from the database interface implementation. This interface separation allows us to divide the interface with the databases and the server implementation, which could be useful if we would need to implement distributed databases and service interface could diverge with the database interface. The libraries have unity tests to ensure correct functionality. The kv_store and id_generator have no tests as this is a simple example but it should have. Using libraries for spefic functionality that can be used project wide has the benefit that we can just easily downgrade the library version used in the service in case of unexpected upgrade bugs, and we also can experiment with the library without the need of upgrade it the main project right away.
+The modules kv_store and id_generator have dedicated python libraries, kv_store_lib and id_generator_lib and this way we separated the servers implementation from the database interface implementation. This interface separation allows us to divide the interface with the databases and the server implementation, which could be useful if we would need to implement distributed databases and service interface could diverge with the database interface. The libraries have unity tests to ensure correct functionality. The kv_store and id_generator have no tests as this is a simple example but it should have. Using libraries for spefic functionality that can be used project wide has the benefit that we can just easily downgrade the library version used in the service in case of unexpected upgrade bugs, and we also can experiment with the library without the need of upgrade it the main project right away.
 
-The rest of the solution is a Coordinator and a Chat Server. (TODO: Add containerization for these services too). The coordinator has tests for the stateless part of its function, the Chat Server and Coordinator interaction over users usage are tested with integration tests. 
+The rest of the solution is a Coordinator and a Chat Server. The coordinator has tests for the stateless part of its function, the Chat Server and Coordinator interaction over users usage are tested with integration tests. 
 
 ## Data model
 
@@ -92,19 +92,31 @@ All other unity tests are in the test folder of each service/library. Each servi
 └── docker-compose.yml # Docker compose for pg, redis database, kv_store and id_generator services
 ```
 
-## Installation
+## Instalation with docker
+The containerized version is perfect for a productive environment (as it descriptive design make easy to handle the infrastructure versioning and details), and could be further upgraded to multiple nodes using kubernetes (Which also would bring rebundance and scalability).
+To build the docker images and run in containers you need to install docker. Execute docker compose and then verify integration tests over the system. You need to have poetry installed to test the modules separately in virtualenvs. It is recomended to also have pyenv so you can handle easily different instalations of python versions. You can run in Ubuntu, Windows with wsl or just powershell. It is tested with Windows with wsl.
 
-You need to have poetry installed to test the modules separately in virtualenvs. It is recomended to also have pyenv so you can handle easily different instalations of python versions. You can run in Ubuntu, Windows with wsl or just powershell. It is tested with Windows with wsl.
-To build the docker images and run in containers you need to install docker. The containerized version is perfect for a productive environment (as it descriptive design make easy to handle the infrastructure versioning and details), and could be further upgraded to multiple nodes using kubernetes (Which also would bring rebundance and scalability)
+```
+docker compose up 
+```
+This starts all project services
+Verify the backend with integrations tests (with poetry):
 
+```bash
+source .venv/bin/activate
+poetry install
+pytest tests/test_messages.py -o log_cli=true --log-cli-level=INFO
+```
 
-### Run project
+If the tests are run correctly you should see '4 passed'
+
+## Complete module installation
 
 To run the project in virtualenvs you need to execute this scripts in order
 
-Important: Change .env_example files to .env before starting. There are two 'src/libs/id_generator_lib/.env_example' and '.env_example'. Also, in case you run services withot docker you need to bring up the database using the docker-compose_just_databases.yml. Rename it to 'docker-compose.yml' (Replace the full docker compose) and run 'docker compose up'.
+Important: Change .env_example files to .env before starting. There are two 'src/libs/id_generator_lib/.env_example' and '.env_example'. Also, in case you run services without docker you need to bring up the database using the docker-compose_just_databases.yml. Rename it to 'docker-compose.yml' (Replace the full docker compose) and run 'docker compose up'.
 
-#### Id generator
+### Id generator
 ```bash
 cd src/id_generator
 python -m venv .venv
@@ -112,7 +124,7 @@ poetry install
 start_id_generator localhost
 ```
 
-#### Kv Store
+### Kv Store
 ```bash
 python -m venv .venv
 source .venv/bin/activate
@@ -120,7 +132,7 @@ poetry install
 start_kv_store localhost 
 ```
 
-#### Coordinator
+### Coordinator
 ```bash
 python -m venv .venv
 source .venv/bin/activate
@@ -128,7 +140,7 @@ poetry install
 start_coordinator localhost
 ```
 
-#### Chat Server
+### Chat Server
 ```bash
 python -m venv .venv
 source .venv/bin/activate
@@ -136,11 +148,11 @@ poetry install
 start_chat_server 0
 ```
 
-### Build libraries
+## Build libraries
 Note: increase version number when upgrading the lib. (TODO: Handle lib versioning in a different repo).
 Compiled libraries are already added to the services in the repo, this is only needed to compile a new lib version.
 
-#### Kv Store Lib
+### Kv Store Lib
 ```bash
 cd src/libs/id_generator_lib
 python -m venv .venv
@@ -150,7 +162,7 @@ cd ../../..
 mv src/libs/id_generator_lib/dist/* src/id_generator/dist
 ```
 
-#### Id generator Lib
+### Id generator Lib
 ```bash
 cd src/libs/kv_store_lib
 python -m venv .venv
