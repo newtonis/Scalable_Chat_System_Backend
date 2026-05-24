@@ -10,9 +10,9 @@ services:
       - /redis_data:/data
     # Aquí configuramos la persistencia AOF (tipo WAL) y el límite de RAM directo por comandos
     command: >
-      redis-server 
-      --appendonly yes 
-      --maxmemory 512mb 
+      redis-server
+      --appendonly yes
+      --maxmemory 512mb
       --maxmemory-policy allkeys-lru
       --bind 0.0.0.0
       --protected-mode no

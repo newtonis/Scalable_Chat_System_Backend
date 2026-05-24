@@ -1,11 +1,12 @@
-import asyncio
-import websockets
-import json
-from utils.jwt_helper import get_user_data_from_path
 import argparse
-from utils import constants
-import httpx
+import asyncio
+import json
 import logging
+
+import httpx
+import websockets
+from utils import constants
+from utils.jwt_helper import get_user_data_from_path
 
 
 class Client:
@@ -36,9 +37,7 @@ async def MessageConsumer(token, queue, client):
 
         if item:
             logging.info(f"Processing message: {item}")
-            await client.websocket.send(
-                json.dumps({"command": "new_message", "message": item})
-            )
+            await client.websocket.send(json.dumps({"command": "new_message", "message": item}))
 
             logging.info("Message processed")
         else:
@@ -63,9 +62,7 @@ def validate_msg_package(data):
 
 # handler is called for each new connection
 async def handler(websocket, server_context):
-    logging.info(
-        f"[+] Connected client: {websocket.remote_address} — Total: {len(clients)}"
-    )
+    logging.info(f"[+] Connected client: {websocket.remote_address} — Total: {len(clients)}")
 
     path = websocket.request.path
 
@@ -92,9 +89,7 @@ async def handler(websocket, server_context):
 
     message_queue = asyncio.Queue()
     # Token is valid, continue connection, wait for messages
-    clients[session_token] = Client(
-        user_id, session_token, websocket, message_queue, websocket.remote_address
-    )
+    clients[session_token] = Client(user_id, session_token, websocket, message_queue, websocket.remote_address)
     # Add a new token for the client connection
     if user_id in sessions_by_client_id:
         sessions_by_client_id[user_id].add(session_token)
@@ -102,9 +97,7 @@ async def handler(websocket, server_context):
         sessions_by_client_id[user_id] = {session_token}
 
     # Create a message consumer for the client
-    task_consumer = asyncio.create_task(
-        MessageConsumer(session_token, message_queue, clients[session_token])
-    )
+    task_consumer = asyncio.create_task(MessageConsumer(session_token, message_queue, clients[session_token]))
 
     try:
         async for message in websocket:
@@ -114,9 +107,7 @@ async def handler(websocket, server_context):
             try:
                 data = json.loads(message)
             except json.JSONDecodeError:
-                logging.info(
-                    f"[-] Invalid Package: {message} from {websocket.remote_address}"
-                )
+                logging.info(f"[-] Invalid Package: {message} from {websocket.remote_address}")
 
             command = data.get("command")
 
@@ -124,9 +115,7 @@ async def handler(websocket, server_context):
             if data.get("command") == "dummy":
                 # Respond to test dummy message
                 logging.info(f"Respond dummy menssage to {websocket.remote_address}")
-                await websocket.send(
-                    json.dumps({"command": "dummy", "value": "dummy answer"})
-                )
+                await websocket.send(json.dumps({"command": "dummy", "value": "dummy answer"}))
             elif command == "new_message":
                 if not validate_msg_package(data):
                     # TODO: Handle to ask for resend
@@ -138,19 +127,13 @@ async def handler(websocket, server_context):
                     message_type = data["message"][
                         "type"
                     ]  # If the message is from a group chat or individual conversation
-                    message_recv_id = int(
-                        data["message"]["user_id"]
-                    )  # Get the target user for the message
+                    message_recv_id = int(data["message"]["user_id"])  # Get the target user for the message
 
                     if message_type == "dm":
                         # Handle direct message
                         logging.info("Sending direct message ...")
                         message_group_name = (
-                            "dm"
-                            + "<"
-                            + str(min(user_id, message_recv_id))
-                            + "<"
-                            + str(max(user_id, message_recv_id))
+                            "dm" + "<" + str(min(user_id, message_recv_id)) + "<" + str(max(user_id, message_recv_id))
                         )
                         logging.info(message_group_name)
 
@@ -167,15 +150,11 @@ async def handler(websocket, server_context):
                         ## TODO: handle transaction failure (retries or respond error message in case of failure)
 
                         message_number = res.json()["generated_id"]["result"]
-                        message_group = (
-                            f"dm_message>{message_group_name}>{message_number}"
-                        )
+                        message_group = f"dm_message>{message_group_name}>{message_number}"
                         msg_value = {"key": message_group, "value": message_value}
                         # Persist message in KV Store
                         async with httpx.AsyncClient() as client:
-                            await client.post(
-                                f"{server_context.kv_store_url}/api/set", json=msg_value
-                            )
+                            await client.post(f"{server_context.kv_store_url}/api/set", json=msg_value)
 
                         # Subsription format {message_group}>{server_id}>{user_id}>{session_token}
 
@@ -227,13 +206,9 @@ async def handler(websocket, server_context):
             #     await asyncio.gather(*[c.send(json.dumps(broadcast)) for c in otros])
 
     except websockets.exceptions.ConnectionClosedOK:
-        logging.info(
-            f"[-] Cliente desconectado limpiamente: {websocket.remote_address}"
-        )
+        logging.info(f"[-] Cliente desconectado limpiamente: {websocket.remote_address}")
     except websockets.exceptions.ConnectionClosedError as e:
-        logging.info(
-            f"[-] Cliente desconectado con error: {websocket.remote_address} — {e}"
-        )
+        logging.info(f"[-] Cliente desconectado con error: {websocket.remote_address} — {e}")
     finally:
         # Register user disconnection in the corresponding selected server
         async with httpx.AsyncClient() as client:
@@ -285,12 +260,8 @@ async def main(server_id, kv_store_host, id_generator_host):
 def start_chat_server():
     parser = argparse.ArgumentParser(description="Chat Server Api")
     parser.add_argument("server_id", type=int, help="Server id")
-    parser.add_argument(
-        "kv_store_host", type=str, help="Kv store host", default="localhost"
-    )
-    parser.add_argument(
-        "id_generator_host", type=str, help="Id generator host", default="localhost"
-    )
+    parser.add_argument("kv_store_host", type=str, help="Kv store host", default="localhost")
+    parser.add_argument("id_generator_host", type=str, help="Id generator host", default="localhost")
 
     args = parser.parse_args()
 

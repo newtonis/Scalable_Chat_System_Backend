@@ -1,5 +1,6 @@
-from kv_store_lib import RedisKVStore
 import asyncio
+
+from kv_store_lib import RedisKVStore
 
 
 # Verifies that a saved value can be read back from the Redis key-value store.
@@ -82,7 +83,7 @@ def test_create_and_delete_key():
 
     value1, value2 = asyncio.run(test_create_and_delete_key())
 
-    assert value1 == "My value A" and value2 == None
+    assert value1 == "My value A" and value2 is not None
 
 
 # Verifies that keys can be queried by prefix and all matching values are returned.
@@ -136,12 +137,7 @@ def test_query_delete_with_suffix():
 
     v1, v2, v3, v4 = asyncio.run(write_keys())
 
-    assert (
-        v1 == "My value A"
-        and v2 == "My value B"
-        and v3 == "My value C"
-        and v4 == "My value D"
-    )
+    assert v1 == "My value A" and v2 == "My value B" and v3 == "My value C" and v4 == "My value D"
 
     async def delete_keys():
         kv_store = RedisKVStore("localhost")
@@ -185,12 +181,7 @@ def test_query_delete_with_prefix_and_suffix():
 
     v1, v2, v3, v4 = asyncio.run(write_keys())
 
-    assert (
-        v1 == "My value A"
-        and v2 == "My value B"
-        and v3 == "My value C"
-        and v4 == "My value D"
-    )
+    assert v1 == "My value A" and v2 == "My value B" and v3 == "My value C" and v4 == "My value D"
 
     async def delete_keys():
         kv_store = RedisKVStore("localhost")

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, jsonify, request
 from utils.users import user_registrator
 
 auth_bp = Blueprint("auth", __name__)
@@ -8,12 +8,7 @@ auth_bp = Blueprint("auth", __name__)
 def register():
     data = request.get_json()
 
-    if (
-        not data
-        or not data.get("email")
-        or not data.get("password")
-        or not data.get("name")
-    ):
+    if not data or not data.get("email") or not data.get("password") or not data.get("name"):
         return jsonify({"error": "Email, contraseña y Name son requeridos"}), 400
 
     email = data["email"]
@@ -47,8 +42,6 @@ def login():
     elif not result and info["error"] == "INVALID_PASSWORD":
         return jsonify({"error": "Credenciales inválidas"}), 401
     elif result:
-        return jsonify(
-            {"name": info["name"], "id": info["id"], "token": info["token"]}
-        ), 200
+        return jsonify({"name": info["name"], "id": info["id"], "token": info["token"]}), 200
 
     return jsonify({"mensaje": "Unexpected result"}), 500

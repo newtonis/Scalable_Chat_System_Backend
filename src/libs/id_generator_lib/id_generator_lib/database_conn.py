@@ -1,10 +1,9 @@
+import logging
+import os
+
 import psycopg2
 import psycopg2.extras
-
-import os
 from dotenv import load_dotenv
-import logging
-
 
 ### Database connection singleton
 
@@ -18,7 +17,9 @@ class DatabaseConn:
         POSTGRES_PASSWORD = os.environ["POSTGRES_PASSWORD"]
         POSTGRES_USER = os.environ["POSTGRES_USER"]
 
-        conn_string = f"host='{postgres_host}' dbname='{POSTGRES_DB}' user='{POSTGRES_USER}' password='{POSTGRES_PASSWORD}'"
+        conn_string = (
+            f"host='{postgres_host}' dbname='{POSTGRES_DB}' user='{POSTGRES_USER}' password='{POSTGRES_PASSWORD}'"
+        )
         self.conn = psycopg2.connect(conn_string)
         self.conn.autocommit = False
 
@@ -33,7 +34,7 @@ class DatabaseConn:
 
         command = """
             SELECT exists (
-                SELECT FROM information_schema.tables 
+                SELECT FROM information_schema.tables
                     WHERE  table_schema = 'public' -- O el nombre de tu esquema
                     AND    table_name   = 'message_groups'
             )
@@ -44,16 +45,16 @@ class DatabaseConn:
         fila = cursor.fetchone()
         conn.commit()  # Cerramos la transaccion
 
-        if fila[0] != True:
+        if not fila[0]:
             logging.info("Generating data model for message groups")
             command = """
-                CREATE TABLE message_groups 
+                CREATE TABLE message_groups
                     (
                         message_group_name VARCHAR(50),
                         counter INTEGER,
                         created_at TIME,
                         updated_at TIME,
-                        
+
                         CONSTRAINT uq_message_group_name UNIQUE (message_group_name)
                     )
             """

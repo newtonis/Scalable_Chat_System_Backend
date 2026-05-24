@@ -1,9 +1,9 @@
-from flask import Blueprint, jsonify, request, current_app
-from utils.jwt_helper import token_required
-import httpx
-from utils.users import user_registrator
 import logging
 
+import httpx
+from flask import Blueprint, current_app, jsonify, request
+from utils.jwt_helper import token_required
+from utils.users import user_registrator
 
 protected_bp = Blueprint("protected", __name__)
 
@@ -58,13 +58,7 @@ async def subscribe_dm():
     logging.info(f"Response from kv store for server number: {data}")
 
     server_id = data["value"]
-    message_group = (
-        "dm"
-        + "<"
-        + str(min(user_id, target_user_id))
-        + "<"
-        + str(max(user_id, target_user_id))
-    )
+    message_group = "dm" + "<" + str(min(user_id, target_user_id)) + "<" + str(max(user_id, target_user_id))
     session_token = request.token
 
     subscription_info = {

@@ -23,9 +23,9 @@ services:
     volumes:
       - ./redis_data:/data
     command: >
-      redis-server 
-      --appendonly yes 
-      --maxmemory 512mb 
+      redis-server
+      --appendonly yes
+      --maxmemory 512mb
       --maxmemory-policy allkeys-lru
       --bind 0.0.0.0
       --protected-mode no
@@ -33,15 +33,15 @@ services:
   kv_store_ms:
     build: /src/kv_store/.
     restart: always
-    ports: 
+    ports:
       - "5001:5001"
     depends_on:
       - kv_store
-  
+
   id_generator_ms:
     build: /src/id_generator/.
     restart: always
-    ports: 
+    ports:
       - "5002:5002"
     depends_on:
       - postgres
@@ -63,4 +63,3 @@ services:
     depends_on:
       - kv_store_ms
       - id_generator_ms
-

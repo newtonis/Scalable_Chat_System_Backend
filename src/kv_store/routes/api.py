@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, current_app, jsonify, request
 from kv_store_lib import RedisKVStore
 
 api_bp = Blueprint("api", __name__)
@@ -42,7 +42,7 @@ async def delete():
 
     host = current_app.config.get("REDIS_HOST")
     my_kv_store = RedisKVStore(host)
-    value = await my_kv_store.delete(key)
+    await my_kv_store.delete(key)
     await my_kv_store.close()
 
     return {"status": "Data deleted"}

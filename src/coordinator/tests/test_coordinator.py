@@ -1,13 +1,15 @@
-import pytest
-from coordinator import app
-from utils import constants
 import asyncio
-import jwt
-import websockets
 import json
 import logging
-from utils.users import user_registrator
 import random
+
+import jwt
+import pytest
+import websockets
+from utils import constants
+from utils.users import user_registrator
+
+from coordinator import app
 
 
 # Test client with clean database on each test
@@ -42,9 +44,7 @@ def token_valido(client, usuario_registrado):
 # Get user id of validated token
 @pytest.fixture
 def user_id(token_valido):
-    payload = jwt.decode(
-        token_valido, app.config["JWT_SECRET_KEY"], algorithms=["HS256"]
-    )
+    payload = jwt.decode(token_valido, app.config["JWT_SECRET_KEY"], algorithms=["HS256"])
     return payload["sub"]
 
 
@@ -97,18 +97,14 @@ def test_query_perfil(client, token_valido):
 
 
 # Registers three distinct users and verifies that the total user list includes them.
-def test_register_three_users_and_check_existance(
-    client, func_register_and_login_new_user
-):
+def test_register_three_users_and_check_existance(client, func_register_and_login_new_user):
     id1, name1, token1 = func_register_and_login_new_user(client)
     id2, name2, token2 = func_register_and_login_new_user(client)
     id3, name3, token3 = func_register_and_login_new_user(client)
 
     logging.info("Users created")
 
-    res = client.get(
-        "/api/get_total_users", headers={"Authorization": f"Bearer {token1}"}
-    )
+    res = client.get("/api/get_total_users", headers={"Authorization": f"Bearer {token1}"})
 
     data = res.get_json()
 
@@ -123,9 +119,7 @@ def test_register_three_users_and_check_existance(
 
 # Requests a chat server and verifies that the returned value is a valid index.
 def test_join_server(client, token_valido, user_id):
-    res = client.get(
-        "/api/join_server", headers={"Authorization": f"Bearer {token_valido}"}
-    )
+    res = client.get("/api/join_server", headers={"Authorization": f"Bearer {token_valido}"})
     assert res.status_code == 200
     data = res.get_json()
     logging.info("Status code is 200")

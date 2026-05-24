@@ -1,6 +1,7 @@
+import argparse
+
 from flask import Flask
 from routes.api import api_bp
-import argparse
 
 app = Flask(__name__)
 app.config["JWT_SECRET_KEY"] = "1234"  # TODO: Colocar clave como un secret

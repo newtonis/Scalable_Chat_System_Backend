@@ -1,8 +1,9 @@
 # Generate a new id for a specific message group.
 # If the message group is new then id will start form 0
 
-import psycopg2
 import logging
+
+import psycopg2
 
 
 class PostgresIdGenerator:
@@ -15,9 +16,9 @@ class PostgresIdGenerator:
         # TODO: Input sanitize, only allow certain characters
         # File lock to block transactions reading the same row
         command = f"""
-            SELECT 
+            SELECT
                 counter
-            FROM message_groups 
+            FROM message_groups
             WHERE
                 message_group_name = '{message_group}'
             FOR UPDATE
@@ -58,7 +59,7 @@ class PostgresIdGenerator:
                 return {"status": "failed_txn (insert into message groups)"}
 
         command = f"""
-            UPDATE 
+            UPDATE
                 message_groups
             SET
                 counter={fila[0] + 1},

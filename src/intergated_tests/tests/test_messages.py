@@ -1,11 +1,12 @@
-import pytest
-from utils import constants
 import asyncio
-import httpx
-import websockets
 import json
 import logging
 import random
+
+import httpx
+import pytest
+import websockets
+from utils import constants
 
 
 @pytest.fixture
@@ -24,9 +25,7 @@ async def usuario_registrado(client):
 @pytest.fixture
 async def login_result(client, usuario_registrado):
     # Get validated token
-    res = await client.post(
-        f"{constants.COORDINATOR_URL}/auth/login", json=usuario_registrado
-    )
+    res = await client.post(f"{constants.COORDINATOR_URL}/auth/login", json=usuario_registrado)
     return res
 
 
@@ -48,12 +47,8 @@ async def func_register_and_login_new_user():
             "password": str(random.randrange(1000)),
             "name": f"foo {random.randrange(200)}",
         }
-        await client.post(
-            f"{constants.COORDINATOR_URL}/auth/register", json=credenciales
-        )
-        res = await client.post(
-            f"{constants.COORDINATOR_URL}/auth/login", json=credenciales
-        )
+        await client.post(f"{constants.COORDINATOR_URL}/auth/register", json=credenciales)
+        res = await client.post(f"{constants.COORDINATOR_URL}/auth/login", json=credenciales)
 
         logging.info(f"Logging result: {res}")
 
@@ -73,9 +68,7 @@ async def func_register_and_login_new_user():
 async def test_connect_and_disconnect(client, valid_token, user_id):
     headers = {"Authorization": f"Bearer {valid_token}"}
 
-    res = await client.get(
-        f"{constants.COORDINATOR_URL}/api/join_server", headers=headers
-    )
+    res = await client.get(f"{constants.COORDINATOR_URL}/api/join_server", headers=headers)
 
     assert res.status_code == 200
     data = res.json()
@@ -83,9 +76,7 @@ async def test_connect_and_disconnect(client, valid_token, user_id):
 
     # Open websocket connection to mark user as connected to server
 
-    async with websockets.connect(
-        f"{constants.CHAT_SERVERS_URL[server_id]}?token={valid_token}"
-    ) as websocket:
+    async with websockets.connect(f"{constants.CHAT_SERVERS_URL[server_id]}?token={valid_token}"):
         logging.info("Connected to websocker with bearer Token")
 
         await asyncio.sleep(5)
@@ -101,27 +92,21 @@ async def test_subscribe_to_conversation(client, valid_token, user_id):
     # Conect client to serverpp
     headers = {"Authorization": f"Bearer {valid_token}"}
 
-    res = await client.get(
-        f"{constants.COORDINATOR_URL}/api/join_server", headers=headers
-    )
+    res = await client.get(f"{constants.COORDINATOR_URL}/api/join_server", headers=headers)
 
     assert res.status_code == 200
     data = res.json()
     server_id = data["server"]
 
     # Open websocket connection to mark user as connected to serve
-    async with websockets.connect(
-        f"{constants.CHAT_SERVERS_URL[server_id]}?token={valid_token}"
-    ) as websocket:
+    async with websockets.connect(f"{constants.CHAT_SERVERS_URL[server_id]}?token={valid_token}"):
         logging.info("Connected to websocker with bearer Token")
 
         # Wait for server to mark us as connected
         await asyncio.sleep(2)
 
         # Verify we are registered as connected in the server
-        res0 = await client.get(
-            f"{constants.KV_STORE_URL}/api/get?key=userver>{user_id}>{valid_token}"
-        )
+        res0 = await client.get(f"{constants.KV_STORE_URL}/api/get?key=userver>{user_id}>{valid_token}")
         value0 = res0.json()["value"]
         assert int(value0) == server_id
 
@@ -158,9 +143,7 @@ async def test_subscribe_to_conversation(client, valid_token, user_id):
     value = response.json()["value"]
     assert value is None
 
-    response2 = await client.get(
-        f"{constants.KV_STORE_URL}/api/get?key=userver>{user_id}>{valid_token}"
-    )
+    response2 = await client.get(f"{constants.KV_STORE_URL}/api/get?key=userver>{user_id}>{valid_token}")
     value2 = response2.json()["value"]
 
     assert value2 is None
@@ -176,9 +159,7 @@ async def test_send_direct_message(client, valid_token, user_id):
     # Conect client to server
     headers = {"Authorization": f"Bearer {valid_token}"}
 
-    res = await client.get(
-        f"{constants.COORDINATOR_URL}/api/join_server", headers=headers
-    )
+    res = await client.get(f"{constants.COORDINATOR_URL}/api/join_server", headers=headers)
     assert res.status_code == 200
     data = res.json()
     server_id = data["server"]
@@ -186,9 +167,7 @@ async def test_send_direct_message(client, valid_token, user_id):
     # Try to establish websocket server connection
     logging.info(f"Connecting to {constants.CHAT_SERVERS_URL[server_id]} ...")
 
-    async with websockets.connect(
-        f"{constants.CHAT_SERVERS_URL[server_id]}?token={valid_token}"
-    ) as websocket:
+    async with websockets.connect(f"{constants.CHAT_SERVERS_URL[server_id]}?token={valid_token}") as websocket:
         logging.info("Connected to websocket with bearer Token")
 
         # Wait for server to mark us as connected
@@ -242,40 +221,28 @@ async def test_send_peer_message(client, func_register_and_login_new_user):
 
     ## Join client 1 to server
     headers1 = {"Authorization": f"Bearer {token1}"}
-    res1 = await client.get(
-        f"{constants.COORDINATOR_URL}/api/join_server", headers=headers1
-    )
+    res1 = await client.get(f"{constants.COORDINATOR_URL}/api/join_server", headers=headers1)
     assert res1.status_code == 200
     data1 = res1.json()
     server_id_1 = data1["server"]
 
     ## Join client 2 to server
     headers2 = {"Authorization": f"Bearer {token2}"}
-    res2 = await client.get(
-        f"{constants.COORDINATOR_URL}/api/join_server", headers=headers2
-    )
+    res2 = await client.get(f"{constants.COORDINATOR_URL}/api/join_server", headers=headers2)
     assert res2.status_code == 200
     data2 = res2.json()
     server_id_2 = data2["server"]
 
-    async def task_message(
-        task_number, from_id, to_id, token, headers, server_id, my_event, other_event
-    ):
-        async with websockets.connect(
-            f"{constants.CHAT_SERVERS_URL[server_id]}?token={token}"
-        ) as websocket:
-            logging.info(
-                f"[Task {task_number}] Connected to websocket with bearer Token"
-            )
+    async def task_message(task_number, from_id, to_id, token, headers, server_id, my_event, other_event):
+        async with websockets.connect(f"{constants.CHAT_SERVERS_URL[server_id]}?token={token}") as websocket:
+            logging.info(f"[Task {task_number}] Connected to websocket with bearer Token")
 
             # Wait for server to mark us as connected
             await asyncio.sleep(2)
 
             logging.info(f"subscription data: {from_id}, {token}")
             # Verify we are registered as connected in the server
-            res0 = await client.get(
-                f"{constants.KV_STORE_URL}/api/get?key=userver>{from_id}>{token}"
-            )
+            res0 = await client.get(f"{constants.KV_STORE_URL}/api/get?key=userver>{from_id}>{token}")
             value0 = res0.json()["value"]
             assert int(value0) == server_id
 
@@ -315,25 +282,13 @@ async def test_send_peer_message(client, func_register_and_login_new_user):
             assert json1["command"] == "new_message"
             assert json2["command"] == "new_message"
 
-            logging.info(
-                f"[Task {task_number}] First recv message id: {json1['message']['id']}"
-            )
-            logging.info(
-                f"[Task {task_number}] First message from: {json1['message']['user_id']}"
-            )
-            logging.info(
-                f"[Task {task_number}] First message content: {json1['message']['value']}"
-            )
+            logging.info(f"[Task {task_number}] First recv message id: {json1['message']['id']}")
+            logging.info(f"[Task {task_number}] First message from: {json1['message']['user_id']}")
+            logging.info(f"[Task {task_number}] First message content: {json1['message']['value']}")
 
-            logging.info(
-                f"[Task {task_number}] Second recv Message id: {json2['message']['id']}"
-            )
-            logging.info(
-                f"[Task {task_number}] Second message from: {json2['message']['user_id']}"
-            )
-            logging.info(
-                f"[Task {task_number}] Second message content: {json2['message']['value']}"
-            )
+            logging.info(f"[Task {task_number}] Second recv Message id: {json2['message']['id']}")
+            logging.info(f"[Task {task_number}] Second message from: {json2['message']['user_id']}")
+            logging.info(f"[Task {task_number}] Second message content: {json2['message']['value']}")
 
             m_by_uid = {}
 

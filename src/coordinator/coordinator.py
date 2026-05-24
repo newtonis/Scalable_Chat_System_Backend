@@ -1,11 +1,10 @@
-from flask import Flask
-from routes.auth import auth_bp
-from routes.api import protected_bp
-from utils import constants
-
-import logging
 import argparse
+import logging
 
+from flask import Flask
+from routes.api import protected_bp
+from routes.auth import auth_bp
+from utils import constants
 
 app = Flask(__name__)
 app.config["JWT_SECRET_KEY"] = "1234"  # TODO: Colocar clave como un secret
@@ -21,9 +20,7 @@ def index():
 
 def start_coordinator():
     parser = argparse.ArgumentParser(description="Coordinator Api")
-    parser.add_argument(
-        "kv_store_host", type=str, help="Kv store host", default="localhost"
-    )
+    parser.add_argument("kv_store_host", type=str, help="Kv store host", default="localhost")
 
     args = parser.parse_args()
 

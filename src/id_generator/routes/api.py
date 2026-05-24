@@ -1,5 +1,5 @@
-from flask import Blueprint, request, jsonify, current_app
-from id_generator_lib import PostgresIdGenerator, DatabaseConn
+from flask import Blueprint, current_app, jsonify, request
+from id_generator_lib import DatabaseConn, PostgresIdGenerator
 
 api_bp = Blueprint("api", __name__)
 
@@ -10,9 +10,7 @@ async def generate_id():
 
     # handle if there is no group name in request
     if "group_name" not in data:
-        return jsonify(
-            {"error": "Bad Request", "mensaje": "No hay group name en el request"}
-        ), 400
+        return jsonify({"error": "Bad Request", "mensaje": "No hay group name en el request"}), 400
 
     group_name = data["group_name"]
 
