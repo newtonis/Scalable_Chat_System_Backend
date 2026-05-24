@@ -4,7 +4,7 @@ This is an implementation for the excercise "CHAPTER 12: DESIGN A CHAT SYSTEM
 " from the book "System Design Interview" from Alex Xu. T
 
 The main idea of the task is to design a chat system backend that has the capacity of scale to handle millon of users. To reach that goal we use a distributed architecture from the begining of the design. The complex design is only worth in the case is used for that amount of users. 
-Not only the complex design would be need in that case but also a cloud service to handle the servers and databases would be needed (AWS, Azure, GCP). Kubernetes could also be an option to manage the server instances in an aritrary amount of nodes, servers don't need to be physical can be containers. In this solution, as a first approach we just containerized the different instances with docker-compose.yml declarative style as we run in a single node, but it could be improved.
+Not only the complex design would be need in that case but also a cloud service to handle the servers and databases would be needed (AWS, Azure, GCP). Kubernetes could also be an option to manage the server instances in an aritrary amount of nodes, servers don't need to be physical can be containers. In this solution, as a first approach we just containerized the different instances with `docker-compose.yml` declarative style as we run in a single node, but it could be improved.
 
 ## Ideal design
 
@@ -26,9 +26,9 @@ The implementation is with python, using poetry and virtualenvs to handle the de
 
 The solution is just a backend, so we rely heavily on tests to verify the functionality. We used two kind of tests, unity tests and integration tests (Using pytest). The system could work with any front end that handle the protocol used in the integration tests. 
 
-The modules kv_store and id_generator have dedicated python libraries, kv_store_lib and id_generator_lib and this way we separated the servers implementation from the database interface implementation. This interface separation allows us to divide the interface with the databases and the server implementation, which could be useful if we would need to implement distributed databases and service interface could diverge with the database interface. The libraries have unity tests to ensure correct functionality. The kv_store and id_generator have no tests as this is a simple example but it should have. Using libraries for spefic functionality that can be used project wide has the benefit that we can just easily downgrade the library version used in the service in case of unexpected upgrade bugs, and we also can experiment with the library without the need of upgrade it the main project right away.
+The modules `kv_store` and `id_generator` have dedicated python libraries, `kv_store_lib` and `id_generator_lib` and this way we separated the servers implementation from the database interface implementation. This interface separation allows us to divide the interface with the databases and the server implementation, which could be useful if we would need to implement distributed databases and service interface could diverge with the database interface. The libraries have unity tests to ensure correct functionality. The `kv_store` and `id_generator` have no tests as this is a simple example but it should have. Using libraries for spefic functionality that can be used project wide has the benefit that we can just easily downgrade the library version used in the service in case of unexpected upgrade bugs, and we also can experiment with the library without the need of upgrade it the main project right away.
 
-The rest of the solution is a Coordinator and a Chat Server. The coordinator has tests for the stateless part of the functionality, the Chat Server and Coordinator interaction over users usage are tested with integration tests. 
+The rest of the solution is a `coordinator` and a `chat_server`. The coordinator has tests for the stateless part of the functionality, the `chat_server` and `coordinator` interaction over users usage are tested with integration tests. 
 
 ## Data model
 
@@ -42,8 +42,8 @@ TODO
 
 ## Project structure
 
-We have all code in src folder. There is one folder for each service (chat_server, coordinator, id_generator, kv_store), plus, an integrated tests folder (That verify the interaction between clients and the services).
-All other unity tests are in the test folder of each service/library. Each service/library has a pyproject.toml and poetry.lock with library requirements and exact library versions used. Dist folders contain the compiled library versions. When a library is compiled that file must be copied from the libs folder with the source code to the service folder that uses the library (In its dist folder).
+We have all code in `src` folder. There is one folder for each service (`chat_server`, `coordinator`, `id_generator`, `kv_store`), plus, an integrated tests folder (That verify the interaction between clients and the services).
+All other unity tests are in the `test` folder of each service/library. Each service/library has a `pyproject.toml` and `poetry.lock` with library requirements and exact library versions used. `Dist` folders contain the compiled library versions. When a library is compiled that file must be copied from the `libs` folder with the source code to the service folder that uses the library (In its `dist` folder).
 
 ```
 /src
@@ -117,7 +117,7 @@ If the tests are run correctly you should see '4 passed'
 
 To run project modules separately in virtualenvs (and to run unit tests) you need to execute these scripts in order.
 
-Important: Change .env_example files to .env before starting. There are two 'src/libs/id_generator_lib/.env_example' and '.env_example'. Also, in case you run services without docker you need to bring up the database using the docker-compose_just_databases.yml. Rename it to 'docker-compose.yml' (Replace the full docker compose) and run 'docker compose up'.
+Important: Change `.env_example` files to `.env` before starting. There are two `src/libs/id_generator_lib/.env_example` and `.env_example`. Also, in case you run services without docker you need to bring up the database using the `docker-compose_just_db.yml`. Rename it to `docker-compose.yml` (Replace the full docker compose) and run `docker compose up`.
 
 ### Id generator
 ```bash
@@ -155,7 +155,7 @@ start_chat_server 0
 Note: increase version number when upgrading the lib. (TODO: Handle lib versioning in a different repo).
 Compiled libraries are already added to the services in the repo, this is only needed to compile a new lib version.
 
-### Kv Store Lib
+### KV Store Lib
 ```bash
 cd src/libs/id_generator_lib
 python -m venv .venv
@@ -196,16 +196,16 @@ There are three integration tests that are used:
 ### Unit tests
 This tests verify the functionality of each module.
 
-#### Kv Store Lib
-To run test of kv store lib you need to run the redis DB docker compose separately. There is a docker-compose.yml in the folder.
+#### KV Store Lib
+To run test of KV store lib you need to run the redis DB docker compose separately. There is a `docker-compose.yml` in the folder.
 
 ```bash
 cd src/libs/kv_store_lib
 pytest tests/test_kv_store.py -o log_cli=true --log-cli-level=INFO
 ```
 
-#### Id generator Lib
-To run test of kv store lib you need to run the redis DB docker compose separately. There is a docker-compose.yml in the folder.
+#### Id Generator Lib
+To run test of ID generator lib you need to run the redis DB docker compose separately. There is a `docker-compose.yml` in the folder.
 
 ```bash
 cd src/libs/id_generator_lib
@@ -213,7 +213,7 @@ pytest tests/test_id_generator.py -o log_cli=true --log-cli-level=INFO
 ```
 
 #### Coordinator
-To run test of coordinator you need to run the redis DB docker compose separately. There is a docker-compose.yml in the folder.
+To run test of coordinator you need to run the redis DB docker compose separately. There is a `docker-compose.yml` in the folder.
 
 ```bash
 cd src/coordinator
@@ -224,29 +224,29 @@ pytest tests/test_id_generator.py -o log_cli=true --log-cli-level=INFO
 
 The project currently includes the following test cases:
 
-- src/intergated_tests/tests/test_messages.py
-  - test_connect_and_disconnect
-  - test_subscribe_to_conversation
-  - test_send_direct_message
-  - test_send_peer_message
+- `src/intergated_tests/tests/test_messages.py`
+  - `test_connect_and_disconnect`
+  - `test_subscribe_to_conversation`
+  - `test_send_direct_message`
+  - `test_send_peer_message`
 
-- src/coordinator/tests/test_coordinator.py
-  - test_register
-  - test_login
-  - test_query_perfil
-  - test_register_three_users_and_check_existance
-  - test_join_server
-  - test_server_connection
+- `src/coordinator/tests/test_coordinator.py`
+  - `test_register`
+  - `test_login`
+  - `test_query_perfil`
+  - `test_register_three_users_and_check_existance`
+  - `test_join_server`
+  - `test_server_connection`
 
-- src/libs/id_generator_lib/tests/test_id_generator.py
-  - test_generate_single_id
-  - test_increment_id
+- `src/libs/id_generator_lib/tests/test_id_generator.py`
+  - `test_generate_single_id`
+  - `test_increment_id`
 
-- src/libs/kv_store_lib/tests/test_kv_store.py
-  - test_save_and_read
-  - test_replace_stored_value
-  - test_two_keys
-  - test_create_and_delete_key
-  - test_query_prefix
-  - test_query_delete_with_suffix
-  - test_query_delete_with_prefix_and_suffix
+- `src/libs/kv_store_lib/tests/test_kv_store.py`
+  - `test_save_and_read`
+  - `test_replace_stored_value`
+  - `test_two_keys`
+  - `test_create_and_delete_key`
+  - `test_query_prefix`
+  - `test_query_delete_with_suffix`
+  - `test_query_delete_with_prefix_and_suffix`
