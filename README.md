@@ -35,13 +35,45 @@ The rest of the solution is a `coordinator` and a `chat_server`. The coordinator
 
 ## Data model
 
-### Kv store
+### KV Store
 
-TODO
+Redis-based key-value store with the following data structures used by chat server:
 
-### Id generator
+**User Server Registration:**
+```
+Key: userver>$user_id>$session_token:100
+Value: $server_id
+```
+Tracks which chat server a connected user is registered to.
 
-TODO
+**User Subscriptions:**
+```
+Key: usubscription>$message_group_name>$server_id>$user_id>$session_token:100
+Value: 'true'
+```
+Tracks user subscriptions to message groups on a specific server.
+
+**Direct Messages:**
+```
+Key: dm_message>$message_group_name>$message_number:100
+Value: $message_content
+```
+Stores direct message content. Message group format: `dm<$min_user_id><$max_user_id>`
+
+### Id Generator
+
+PostgreSQL table for tracking message group counters:
+
+```sql
+CREATE TABLE message_groups (
+    message_group_name VARCHAR PRIMARY KEY,
+    counter INTEGER NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE,
+    updated_at TIMESTAMP WITH TIME ZONE
+)
+```
+
+Stores sequential ID counters for each message group. Primary Key is message_group_name to ensure there can't be duplicate chat groups. Transaction managment of id generator gurantee the uniqueness of ids.
 
 ## Project structure
 
@@ -245,7 +277,7 @@ The project currently includes the following test cases:
   - `test_generate_single_id`
   - `test_increment_id`
 
-- `src/libs/kv_store_lib/tests/test_kv_store.py`
+- `src/libs/kv_store_lib/tests/test_kv_store.pypp`
   - `test_save_and_read`
   - `test_replace_stored_value`
   - `test_two_keys`
