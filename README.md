@@ -261,7 +261,7 @@ pytest tests/test_id_generator.py -o log_cli=true --log-cli-level=INFO
 ```
 
 #### Coordinator
-To run test of coordinator you need to run the redis DB docker compose separately. There is a `docker-compose.yml` in the folder.
+To run test of coordinator you need to run the redis DB docker compose separately. There is a `docker-compose.yml` in the folder. Important: to run sucesfully the test that attempt a chat server conection 'test_server_connection' you need to run the chat server.
 
 ```bash
 cd src/coordinator
