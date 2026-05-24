@@ -1,7 +1,6 @@
 # Scalable Chat System Backend
 
-This is an implementation for the excercise "CHAPTER 12: DESIGN A CHAT SYSTEM
-" from the book "System Design Interview" from Alex Xu. T
+This is an implementation for the excercise `CHAPTER 12: DESIGN A CHAT SYSTEM` from the book `System Design Interview` from Alex Xu. T
 
 The main idea of the task is to design a chat system backend that has the capacity of scale to handle millon of users. To reach that goal we use a distributed architecture from the begining of the design. The complex design is only worth in the case is used for that amount of users. 
 Not only the complex design would be need in that case but also a cloud service to handle the servers and databases would be needed (AWS, Azure, GCP). Kubernetes could also be an option to manage the server instances in an aritrary amount of nodes, servers don't need to be physical can be containers. In this solution, as a first approach we just containerized the different instances with `docker-compose.yml` declarative style as we run in a single node, but it could be improved.
