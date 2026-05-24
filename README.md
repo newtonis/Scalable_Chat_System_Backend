@@ -266,7 +266,7 @@ To run test of coordinator you need to run the redis DB docker compose separatel
 ```bash
 cd src/coordinator
 source .venv/bin/activate
-pytest tests/coordinator.py -o log_cli=true --log-cli-level=INFO
+pytest tests/test_coordinator.py -o log_cli=true --log-cli-level=INFO
 ```
 
 ### Test List
