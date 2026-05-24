@@ -153,7 +153,7 @@ If the tests are run correctly you should see '4 passed'
 
 To run project modules separately in virtualenvs (and to run unit tests) you need to execute these scripts in order.
 
-Important: Change `.env_example` files to `.env` before starting. There are two `src/libs/id_generator_lib/.env_example` and `.env_example`. Also, in case you run services without docker you need to bring up the database using the `docker-compose_just_db.yml`. Rename it to `docker-compose.yml` (Replace the full docker compose) and run `docker compose up`.
+Important: Change `.env_example` files to `.env` before starting. There are three `src/id_generator/.env_example` , `src/libs/id_generator_lib/.env_example` and `.env_example`. Also, in case you run services without docker you need to bring up the database using the `docker-compose_just_db.yml`. Rename it to `docker-compose.yml` (Replace the full docker compose) and run `docker compose up`.
 
 ### Id generator
 ```bash
