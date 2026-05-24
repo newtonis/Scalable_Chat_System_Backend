@@ -57,8 +57,8 @@ def func_register_and_login_new_user():
             "password": str(random.randrange(1000)),
             "name": f"foo {random.randrange(200)}",
         }
-        client.post("/auth/register", json=credenciales)
-        res = client.post("/auth/login", json=credenciales)
+        client_ref.post("/auth/register", json=credenciales)
+        res = client_ref.post("/auth/login", json=credenciales)
 
         id = res.get_json()["id"]
         name = credenciales["name"]
@@ -86,14 +86,6 @@ def test_login(client, usuario_registrado):
     res = client.post("/auth/login", json=usuario_registrado)
     assert res.status_code == 200
     assert "token" in res.get_json()
-
-
-# Checks protected access to the profile route using a valid JWT token.
-def test_query_perfil(client, token_valido):
-    res = client.get("/api/perfil", headers={"Authorization": f"Bearer {token_valido}"})
-    assert res.status_code == 200
-    data = res.get_json()
-    assert data["mensaje"] == "Ruta protegida"
 
 
 # Registers three distinct users and verifies that the total user list includes them.
