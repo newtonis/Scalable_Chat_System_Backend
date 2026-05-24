@@ -1,3 +1,4 @@
+services:  
   kv_store:
     image: redis:7.2-alpine
     container_name: kv_store
