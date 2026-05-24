@@ -126,7 +126,7 @@ def test_server_connection(client, token_valido, user_id):
     res = client.get("/api/join_server", headers=headers)
     assert res.status_code == 200
     data = res.get_json()
-    url = data["server"]
+    url = constants.CHAT_SERVERS_URL[data["server"]].format(host="localhost")
 
     # Try to establish websocket server connection
     logging.info(f"Connecting to {url} ...")
