@@ -28,7 +28,7 @@ The solution is just a backend, so we rely heavily on tests to verify the functi
 
 The modules kv_store and id_generator have dedicated python libraries, kv_store_lib and id_generator_lib and this way we separated the servers implementation from the database interface implementation. This interface separation allows us to divide the interface with the databases and the server implementation, which could be useful if we would need to implement distributed databases and service interface could diverge with the database interface. The libraries have unity tests to ensure correct functionality. The kv_store and id_generator have no tests as this is a simple example but it should have. Using libraries for spefic functionality that can be used project wide has the benefit that we can just easily downgrade the library version used in the service in case of unexpected upgrade bugs, and we also can experiment with the library without the need of upgrade it the main project right away.
 
-The rest of the solution is a Coordinator and a Chat Server. The coordinator has tests for the stateless part of its function, the Chat Server and Coordinator interaction over users usage are tested with integration tests. 
+The rest of the solution is a Coordinator and a Chat Server. The coordinator has tests for the stateless part of the functionality, the Chat Server and Coordinator interaction over users usage are tested with integration tests. 
 
 ## Data model
 
@@ -52,11 +52,13 @@ All other unity tests are in the test folder of each service/library. Each servi
 │   ├── pyproject.toml
 │   ├── poetry.lock
 │   ├── chat_server.py # Main file
+│   ├── Dockerfile
 │   └── utils/
 ├── coordinator/
 │   ├── pyproject.toml
 │   ├── poetry.lock
 │   ├── coordinator.py # Main file
+│   ├── Dockerfile
 │   ├── tests/
 │   ├── routes/
 │   └── utils/
@@ -64,16 +66,16 @@ All other unity tests are in the test folder of each service/library. Each servi
 │    ├── pyproject.toml
 │    ├── poetry.lock
 │    ├── id_generator.py # Main file
+│    ├── Dockerfile
 │    ├── routes/
-│    ├── dist/ # Compiled Id generator lib for the service
-│    └── Dockerfile
+│    └── dist/ # Compiled Id generator lib for the service
 ├── kv_store/
 │    ├── pyproject.toml
 │    ├── poetry.lock
 │    ├── kv_store.py # Main file
+│    ├── Dockerfile
 │    ├── routes/
-│    ├── dist/ # Compiled Kv Store lib for the service
-│    └── Dockerfile
+│    └── dist/ # Compiled Kv Store lib for the service
 ├── libs/ # Project libraries used in dependencies
 │    └── kv_store_lib/
 │        ├── pyproject.toml
@@ -89,7 +91,8 @@ All other unity tests are in the test folder of each service/library. Each servi
 │        ├── tests/
 │        └── dist/
 ├── docs/
-└── docker-compose.yml # Docker compose for pg, redis database, kv_store and id_generator services
+├── docker-compose.yml # Docker compose for pg, redis database, kv_store and id_generator services
+└── docker-compose_just_db.yml # Docker compose for pg and redis databases only
 ```
 
 ## Instalation with docker
@@ -100,7 +103,7 @@ To build the docker images and run in containers you need to install docker. Exe
 docker compose up 
 ```
 This starts all project services
-Verify the backend with integrations tests (with poetry):
+. Verify the backend with integrations tests (with poetry):
 
 ```bash
 source .venv/bin/activate
@@ -112,7 +115,7 @@ If the tests are run correctly you should see '4 passed'
 
 ## Complete module installation
 
-To run the project in virtualenvs you need to execute this scripts in order
+To run project modules separately in virtualenvs (and to run unit tests) you need to execute these scripts in order.
 
 Important: Change .env_example files to .env before starting. There are two 'src/libs/id_generator_lib/.env_example' and '.env_example'. Also, in case you run services without docker you need to bring up the database using the docker-compose_just_databases.yml. Rename it to 'docker-compose.yml' (Replace the full docker compose) and run 'docker compose up'.
 
