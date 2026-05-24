@@ -231,7 +231,7 @@ pytest tests/test_messages.py -o log_cli=true --log-cli-level=INFO
 ```
 Note: registration may fail is user already registered but it has no effect and do not make test to fail. TODO: Clean to make no registration if not needed, or to delete user after tests are finished.
 
-There are three integration tests that are used:
+Integration tests that are used:
 
 - test_connect_and_disconnect
 - test_subscribe_to_conversation
