@@ -18,5 +18,4 @@ repos:
     rev: 5.13.2
     hooks:
       - id: isort
-        # "profile=black" es CRUCIAL para que isort y black no se peleen por los espacios
         args: [ "--profile=black", "--line-length=120" ]
