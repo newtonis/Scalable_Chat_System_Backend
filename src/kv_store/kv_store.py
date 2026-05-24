@@ -15,7 +15,7 @@ def index():
 
 def start_kv_store():
     parser = argparse.ArgumentParser(description="KV Store API")
-    parser.add_argument("redis_host", type=str, help="redis host")
+    parser.add_argument("redis_host", type=str, help="redis host", default="localhost")
 
     args = parser.parse_args()
 

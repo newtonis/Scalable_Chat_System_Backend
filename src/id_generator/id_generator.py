@@ -15,7 +15,7 @@ def index():
 
 def start_id_generator():
     parser = argparse.ArgumentParser(description="Id generator Api")
-    parser.add_argument("postgres_host", type=str, help="postgres host")
+    parser.add_argument("postgres_host", type=str, help="postgres host", default="localhost")
 
     logging.basicConfig(
         level=logging.INFO,

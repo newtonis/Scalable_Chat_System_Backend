@@ -54,3 +54,13 @@ services:
     depends_on:
       - kv_store_ms
       - id_generator_ms
+
+  chat_server_0:
+    build: /src/chat_server/.
+    restart: always
+    ports:
+      - "5003:5003"
+    depends_on:
+      - kv_store_ms
+      - id_generator_ms
+

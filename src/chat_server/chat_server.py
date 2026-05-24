@@ -18,6 +18,13 @@ class Client:
         self.client_addr = client_addr
 
 
+class ServerContext:
+    def __init__(self, server_id, kv_store_url, id_generator_url):
+        self.server_id = server_id
+        self.kv_store_url = kv_store_url
+        self.id_generator_url = id_generator_url
+
+
 # Set of connected clients
 clients = {}
 sessions_by_client_id = {}
@@ -57,7 +64,7 @@ def validate_msg_package(data):
 
 
 # handler is called for each new connection
-async def handler(websocket, server_id):
+async def handler(websocket, server_context):
     logging.info(f"[+] Connected client: {websocket.remote_address} — Total: {len(clients)}")
         
     path = websocket.request.path
@@ -76,11 +83,11 @@ async def handler(websocket, server_id):
     # Register user connection as connected in the corresponding selected server
     async with httpx.AsyncClient() as client:
         await client.post(
-            f"{constants.KV_STORE_URL}/api/set", 
+            f"{server_context.kv_store_url}/api/set", 
             json=
             {
                 "key": f"userver>{user_id}>{session_token}",
-                "value": server_id
+                "value": server_context.server_id
             }
         )
 
@@ -138,7 +145,7 @@ async def handler(websocket, server_id):
                         # Generate message id
                         async with httpx.AsyncClient() as client:
                             res = await client.post(
-                                f"{constants.ID_GENERATOR_URL}/api/generate_id", 
+                                f"{server_context.id_generator_url}/api/generate_id", 
                                 json=
                                 {
                                     "group_name": message_group_name
@@ -156,7 +163,7 @@ async def handler(websocket, server_id):
                         # Persist message in KV Store
                         async with httpx.AsyncClient() as client:
                             await client.post(
-                                f"{constants.KV_STORE_URL}/api/set", 
+                                f"{server_context.kv_store_url}/api/set", 
                                 json=msg_value
                             )
 
@@ -165,7 +172,7 @@ async def handler(websocket, server_id):
                         # Check group subscription users in this server
                         async with httpx.AsyncClient() as client:
                             response = await client.get(
-                                f"{constants.KV_STORE_URL}/api/get_all_with_prefix?prefix=usubscription>{message_group_name}>{server_id}"
+                                f"{server_context.kv_store_url}/api/get_all_with_prefix?prefix=usubscription>{message_group_name}>{server_context.server_id}"
                             )
                         data_subscriptions = response.json()
 
@@ -215,7 +222,7 @@ async def handler(websocket, server_id):
         # Register user disconnection in the corresponding selected server
         async with httpx.AsyncClient() as client:
             await client.post(
-                f"{constants.KV_STORE_URL}/api/delete", 
+                f"{server_context.kv_store_url}/api/delete", 
                 json=
                 {
                     "key": f"userver>{user_id}>{session_token}"
@@ -225,7 +232,7 @@ async def handler(websocket, server_id):
         # Unsubscribe this user connection from all chat subscriptions (That will be of this server)
         async with httpx.AsyncClient() as client:
             await client.post(
-                f"{constants.KV_STORE_URL}/api/delete_all_with_prefix_and_suffix", 
+                f"{server_context.kv_store_url}/api/delete_all_with_prefix_and_suffix", 
                 json=
                 {
                     "prefix": "usubscription>" 
@@ -245,34 +252,40 @@ async def handler(websocket, server_id):
         logging.info(f"    Clientes restantes: {len(clients)}")
 
 
-async def main(server_id):
-    server_url = constants.CHAT_SERVERS_URL[server_id]
+async def main(server_id, kv_store_host, id_generator_host):
+    port = constants.CHAT_SERVERS_PORTS[server_id]
 
-    host = urlparse(server_url).hostname
-    port = urlparse(server_url).port
-
-    logging.info(f"WebSocket running on ws://{host}:{port}")
+    logging.info(f"WebSocket running on ws://0.0.0.0:{port}")
     logging.info(f"Waiting for connections ... (Ctrl+C to stop)\n")
 
-    # Handler with server id variable embeeded
-    async def handler_with_server_id(websocket):
-        await handler(websocket, server_id)
+    # Handler with context variables embeeded
+    async def handler_with_context(websocket):
+        await handler(
+            websocket, 
+            ServerContext(
+                server_id,
+                constants.KV_STORE_URL.format(host=kv_store_host), 
+                constants.ID_GENERATOR_URL.format(host=id_generator_host)
+            )
+        )
 
-    async with websockets.serve(handler_with_server_id, host, port):
+    async with websockets.serve(handler_with_context, "0.0.0.0", port):
         await asyncio.Future() # Run indefinitely
 
 
 def start_chat_server():
+    parser = argparse.ArgumentParser(description="Chat Server Api")
+    parser.add_argument("server_id", type=int, help="Server id")
+    parser.add_argument("kv_store_host", type=str, help="Kv store host", default="localhost")
+    parser.add_argument("id_generator_host", type=str, help="Id generator host", default="localhost")
+
+    args = parser.parse_args()
+
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s [%(levelname)s] %(message)s"  # Clean disign for console
     )
     
-    parser = argparse.ArgumentParser(description="Chat Server")
-    parser.add_argument("server_id", type=int, help="Port to Run Server")
-
-    args = parser.parse_args()
-    
-    asyncio.run(main(args.server_id))
+    asyncio.run(main(args.server_id, args.kv_store_host, args.id_generator_host))
 
 start_chat_server()

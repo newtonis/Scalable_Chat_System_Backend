@@ -1,7 +1,7 @@
 from flask import Flask
 from routes.auth import auth_bp
 from routes.api import protected_bp
-import constants
+from utils import constants
 
 import logging
 import argparse
@@ -21,7 +21,7 @@ def index():
 
 def start_coordinator():
     parser = argparse.ArgumentParser(description="Coordinator Api")
-    parser.add_argument("kv_store_host", type=str, help="Kv store host")
+    parser.add_argument("kv_store_host", type=str, help="Kv store host", default="localhost")
 
     args = parser.parse_args()
     

@@ -74,7 +74,7 @@ async def test_connect_and_disconnect(client, valid_token, user_id):
     async with websockets.connect(f"{constants.CHAT_SERVERS_URL[server_id]}?token={valid_token}") as websocket:
         logging.info("Connected to websocker with bearer Token")
 
-        await asyncio.sleep(20)
+        await asyncio.sleep(5)
 
         logging.info("Wait time ended, disconnecting")
 

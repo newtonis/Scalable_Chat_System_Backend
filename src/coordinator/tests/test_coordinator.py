@@ -17,6 +17,7 @@ import random
 def client(): 
     app.config["TESTING"] = True
     app.config["JWT_SECRET_KEY"] = "1234"
+    app.config["KV_STORE_URL"] = constants.KV_STORE_URL.format(host="localhost")
 
     user_registrator.clean_db()
 
@@ -37,6 +38,7 @@ def token_valido(client, usuario_registrado):
     
     return res.get_json()["token"]
 
+# Get user id of validated token
 @pytest.fixture
 def user_id(token_valido):
     payload = jwt.decode(
@@ -46,7 +48,7 @@ def user_id(token_valido):
     )
     return payload["sub"]
 
-
+# Function to generate a new login user
 @pytest.fixture
 def func_register_and_login_new_user():
     def register_and_login_user(client_ref):
