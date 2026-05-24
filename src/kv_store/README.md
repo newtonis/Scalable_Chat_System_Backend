@@ -104,10 +104,3 @@ Base path: `/api`
   }
   ```
 - **Response (400):** Missing prefix or suffix in request
-
-## Key Format Convention
-
-The KV Store uses a delimiter-based key naming convention with `>` as the separator:
-- `userver>user_id>session_token` - Maps users to their assigned chat server
-- `usubscription>message_group>server_id>user_id>session_token` - Stores user subscriptions to message groups
-- `dm<min_user_id<max_user_id` - Direct message group identifiers
