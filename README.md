@@ -6,7 +6,7 @@ The main idea of the task is to design a chat system backend that has the capaci
 Not only the complex design would be need in that case but also a cloud service to handle the servers and databases would be needed (AWS, Azure, GCP). Kubernetes could also be an option to manage the server instances in an aritrary amount of nodes, servers don't need to be physical can be containers. In this solution, as a first approach we just containerized the different instances with `docker-compose.yml` declarative style as we run in a single node, but it could be improved.
 
 ## What is made with AI?
-AI was used as a guide in debugging (mostly Gemini) and to generate initial code snippets with Claude. However the implementation of all architecture was made by hand using these snipets as a starting point. No part of the code is made entirely by AI with no revision.
+AI was used as a guide with debugging (mostly Gemini) and to generate initial code snippets with Claude. However the implementation of all architecture was made by hand using these snipets as a starting point. No part of the code is made entirely by AI with no revision.
 Docs of endpoint description and comments of tests exept for integration tests (That are the most complex and important ones) were made with AI using copilot and reviewed.
 
 ## Ideal design
