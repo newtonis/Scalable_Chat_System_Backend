@@ -4,7 +4,7 @@ This document describes all the Flask endpoints provided by the Coordinator serv
 
 ## Authentication Endpoints
 
-Base path: `/`
+Base path: `/auth`
 
 ### Register User
 - **Route:** `POST /register`
@@ -52,7 +52,7 @@ Base path: `/`
 
 All protected endpoints require a valid JWT token in the request headers.
 
-Base path: `/`
+Base path: `/api`
 
 ### Get User Profile
 - **Route:** `GET /perfil`
