@@ -40,7 +40,7 @@ TODO
 
 TODO
 
-## Proyect structure
+## Project structure
 
 We have all code in src folder. There is one folder for each service (chat_server, coordinator, id_generator, kv_store), plus, an integrated tests folder (That verify the interaction between clients and the services).
 All other unity tests are in the test folder of each service/library. Each service/library has a pyproject.toml and poetry.lock with library requirements and exact library versions used. Dist folders contain the compiled library versions. When a library is compiled that file must be copied from the libs folder with the source code to the service folder that uses the library (In its dist folder).
