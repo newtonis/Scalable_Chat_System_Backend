@@ -205,7 +205,7 @@ cd src/coordinator
 pytest tests/test_id_generator.py -o log_cli=true --log-cli-level=INFO
 ```
 
-#### Test List
+### Test List
 
 The project currently includes the following test cases:
 

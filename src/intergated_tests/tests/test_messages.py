@@ -57,6 +57,8 @@ async def func_register_and_login_new_user():
     return register_and_login_user
 
 
+# We test a client to connect to the coordinator, complete register and login, and then make it join the chat server with the same session. Then disconnect. 
+
 @pytest.mark.asyncio
 async def test_connect_and_disconnect(client, valid_token, user_id):
     headers = {"Authorization": f"Bearer {valid_token}"}
@@ -76,7 +78,8 @@ async def test_connect_and_disconnect(client, valid_token, user_id):
 
         logging.info("Wait time ended, disconnecting")
 
-
+#  We test a client to connect to the coordinator, complete register and login, make it join the chat server and then subscribe to a conversation of the same user 
+# (It would be the User-User chat). We verify subscription in the kv store database. Then we disconnect and verify unsubscription and user to be disconnected in kv store database.
 @pytest.mark.asyncio
 async def test_subscribe_to_conversation(client, valid_token, user_id):
 
@@ -125,7 +128,7 @@ async def test_subscribe_to_conversation(client, valid_token, user_id):
     # Wait for server to cancel subscription
     await asyncio.sleep(2)
 
-    # Verify unsubpscrition in database to server and to the conversation
+    # Verify unsubscription in database to server and to the conversation
     response = await client.get(
         f"{constants.KV_STORE_URL}/api/get?key=usubscription>{message_group}>{server_id}>{user_id}>{valid_token}"
     )
@@ -140,7 +143,10 @@ async def test_subscribe_to_conversation(client, valid_token, user_id):
     assert value2 is None
 
 
-# Send a Direct Message to Myself
+# We test a client to connect to the coordinator, complete register and login, make it join the chat server, subscribe to a conversation of the same user. 
+# We verify subscription and then send a message to the same user (User-User Chat). 
+# Then we verify the message is received (As we are subscribed to conversation) and its content
+
 @pytest.mark.asyncio
 async def test_send_direct_message(client, valid_token, user_id):
     # Conect client to server
@@ -189,7 +195,12 @@ async def test_send_direct_message(client, valid_token, user_id):
         assert rta_json["message"]["value"] == 'test message' and int(rta_json["message"]["user_id"]) == user_id and rta_json["message"]["type"] == "dm"
 
 
-# Send a Direct Message to Myself
+# We test two clients to connect to coordinator, complete register and login. Then we make them join the chat server (and verify the stored kv store connection information) 
+# and subscribe to the conversation of these two users. We verify the users subscriptions in kv store database. 
+# After we wait for each user to complete the subscription (To avoid race conditions and guarantee sent messages are transmitted as both users are already subscribed) then we make them send a message to its dm channel, 
+# and verify the reception of the message of each one. We just log the message count, that should be n, n + 1. when n is the messages send before running the test. 
+# To make this test to work we had to make id generator able to handle concurrency of operations and guarantee a different id to be assigned to each message.
+
 @pytest.mark.asyncio
 async def test_send_peer_message(client, func_register_and_login_new_user):
 
