@@ -4,8 +4,12 @@ import os
 import psycopg2
 import psycopg2.extras
 from dotenv import load_dotenv
+from pybreaker import CircuitBreaker
+from tenacity import retry, stop_after_attempt, wait_exponential
 
 ### Database connection singleton
+
+db_circuit_breaker = CircuitBreaker(fail_max=5, reset_timeout=60, name="PostgreSQL")
 
 
 class DatabaseConn:
@@ -20,12 +24,18 @@ class DatabaseConn:
         conn_string = (
             f"host='{postgres_host}' dbname='{POSTGRES_DB}' user='{POSTGRES_USER}' password='{POSTGRES_PASSWORD}'"
         )
-        self.conn = psycopg2.connect(conn_string)
-        self.conn.autocommit = False
 
+        self.conn = self._connect_with_retry(conn_string)
+        self.conn.autocommit = False
         self.cursor = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
+    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=0.5, min=0.5, max=5), reraise=True)
+    def _connect_with_retry(self, conn_string):
+        """Establish database connection with retry logic and circuit breaker"""
+        return db_circuit_breaker.call(psycopg2.connect, conn_string)
+
     # Try to init the dabase (if already created has no effect)
+    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=0.5, min=0.5, max=5), reraise=True)
     def try_init_database(self):
         logging.info("Trying to start database ...")
 

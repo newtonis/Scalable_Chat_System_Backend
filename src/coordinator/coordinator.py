@@ -22,6 +22,11 @@ def start_coordinator():
     parser = argparse.ArgumentParser(description="Coordinator Api")
     parser.add_argument("kv_store_host", type=str, help="Kv store host", default="localhost")
 
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(message)s",  # Clean disign for console
+    )
+
     args = parser.parse_args()
 
     app.config["KV_STORE_URL"] = constants.KV_STORE_URL.format(host=args.kv_store_host)

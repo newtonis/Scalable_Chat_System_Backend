@@ -4,6 +4,10 @@
 import logging
 
 import psycopg2
+from pybreaker import CircuitBreaker
+from tenacity import retry, stop_after_attempt, wait_exponential
+
+id_gen_circuit_breaker = CircuitBreaker(fail_max=5, reset_timeout=60, name="IdGenerator")
 
 
 class PostgresIdGenerator:
@@ -12,7 +16,11 @@ class PostgresIdGenerator:
         self.conn = database_conn.conn
         self.cursor = database_conn.cursor
 
+    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=0.5, min=0.5, max=5), reraise=True)
     def generate_new_id(self, message_group):
+        return id_gen_circuit_breaker.call(self._generate_id_impl, message_group)
+
+    def _generate_id_impl(self, message_group):
         # TODO: Input sanitize, only allow certain characters
         # File lock to block transactions reading the same row
         command = f"""
@@ -31,7 +39,7 @@ class PostgresIdGenerator:
         except psycopg2.errors.LockNotAvailable:
             logging.info("Transaction in confict, cancelled")
             self.conn.rollback()
-            return {"status": "failed_txn (select counter)"}
+            raise
 
         fila = self.cursor.fetchone()
 
@@ -56,7 +64,7 @@ class PostgresIdGenerator:
             except psycopg2.errors.LockNotAvailable:
                 logging.info("Transaction in confict, cancelled")
                 self.conn.rollback()
-                return {"status": "failed_txn (insert into message groups)"}
+                raise
 
         command = f"""
             UPDATE
@@ -76,6 +84,6 @@ class PostgresIdGenerator:
         except psycopg2.DatabaseError:
             logging.info("Transaccion en conflicto, cancelada")
             self.conn.rollback()  # Declare for psycopg2 transaction failed
-            return {"status": "failed_txn (insert/update counter)"}
+            raise
 
         return {"status": "id_generated", "result": answer}

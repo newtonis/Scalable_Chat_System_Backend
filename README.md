@@ -289,3 +289,14 @@ The project currently includes the following test cases:
 ## Pre commit hooks
 
 The project use pre commit hooks to ensure code quality. The file `pre-commit-config.yaml` has the configuration (Currently black, ruff and isort are activated)
+
+## Observability
+
+This is a test to run observability with opentelemetry in the coordinator module to check traces, metrics and logs. We just sent the data to console as it was a simple test. This observability information could be sent to another system to be properly monitored.
+
+```bash
+cd src/coordinator
+source .venv/bin/activate
+opentelemetry-bootstrap -a install
+opentelemetry-instrument    opentelemetry-instrument     --traces_exporter console     --metrics_exporter console     --logs_exporter console start_coordinator localhost
+```bash
