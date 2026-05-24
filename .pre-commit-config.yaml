@@ -1,19 +1,16 @@
 repos:
-  # BLACK:
   - repo: https://github.com/psf/black
     rev: 24.4.2
     hooks:
       - id: black
         args: [ "--line-length=120" ]
 
-  # RUFF
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.4.4
     hooks:
       - id: ruff
         args: [ --fix ]
 
-  # Black
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2
     hooks:
