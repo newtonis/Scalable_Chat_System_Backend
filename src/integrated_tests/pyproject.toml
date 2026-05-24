@@ -1,0 +1,24 @@
+[project]
+name = "tests"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "newtonis",email = "ariel.nowik@gmail.com"}
+]
+requires-python = ">=3.11"
+dependencies = [
+    "asyncio (>=4.0.0,<5.0.0)",
+    "pytest (>=9.0.3,<10.0.0)",
+    "pytest-asyncio (>=1.3.0,<2.0.0)",
+    "httpx (>=0.28.1,<0.29.0)",
+    "websockets (>=16.0,<17.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"

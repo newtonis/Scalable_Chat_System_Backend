@@ -142,6 +142,7 @@ This starts all project services
 
 ```bash
 source .venv/bin/activate
+poetry lock
 poetry install
 pytest tests/test_messages.py -o log_cli=true --log-cli-level=INFO
 ```
@@ -158,6 +159,7 @@ Important: Change `.env_example` files to `.env` before starting. There are two 
 ```bash
 cd src/id_generator
 python -m venv .venv
+poetry lock
 poetry install
 start_id_generator localhost
 ```
@@ -166,6 +168,7 @@ start_id_generator localhost
 ```bash
 python -m venv .venv
 source .venv/bin/activate
+poetry lock
 poetry install
 start_kv_store localhost
 ```
@@ -174,6 +177,7 @@ start_kv_store localhost
 ```bash
 python -m venv .venv
 source .venv/bin/activate
+poetry lock
 poetry install
 start_coordinator localhost
 ```
@@ -182,8 +186,9 @@ start_coordinator localhost
 ```bash
 python -m venv .venv
 source .venv/bin/activate
+poetry lock
 poetry install
-start_chat_server 0
+start_chat_server 0 localhost localhost
 ```
 
 ## Build libraries
@@ -195,6 +200,7 @@ Compiled libraries are already added to the services in the repo, this is only n
 cd src/libs/id_generator_lib
 python -m venv .venv
 source .venv/bin/activate
+poetry lock
 poetry build
 cd ../../..
 mv src/libs/id_generator_lib/dist/* src/id_generator/dist
@@ -205,6 +211,7 @@ mv src/libs/id_generator_lib/dist/* src/id_generator/dist
 cd src/libs/kv_store_lib
 python -m venv .venv
 source .venv/bin/activate
+poetry lock
 poetry build
 cd ../../..
 mv src/libs/kv_store_lib/dist/* src/kv_store_lib/dist
@@ -216,6 +223,10 @@ mv src/libs/kv_store_lib/dist/* src/kv_store_lib/dist
 This tests are important to verify the functionality of the whole system.  We add '-o log_cli=true --log-cli-level=INFO' to enable logging for further test debugging . The test are made incrementing the usage of the system in each one. This test driven development is perfect to design the system deacoupled from fronted (That is not included in this project).
 
 ```bash
+cd src/integration_tests
+source .venv/bin/activate´
+poetry lock
+poetry install
 pytest tests/test_messages.py -o log_cli=true --log-cli-level=INFO
 ```
 Note: registration may fail is user already registered but it has no effect and do not make test to fail. TODO: Clean to make no registration if not needed, or to delete user after tests are finished.
@@ -236,6 +247,7 @@ To run test of KV store lib you need to run the redis DB docker compose separate
 
 ```bash
 cd src/libs/kv_store_lib
+source .venv/bin/activate
 pytest tests/test_kv_store.py -o log_cli=true --log-cli-level=INFO
 ```
 
@@ -244,6 +256,7 @@ To run test of ID generator lib you need to run the redis DB docker compose sepa
 
 ```bash
 cd src/libs/id_generator_lib
+source .venv/bin/activate
 pytest tests/test_id_generator.py -o log_cli=true --log-cli-level=INFO
 ```
 
@@ -252,6 +265,7 @@ To run test of coordinator you need to run the redis DB docker compose separatel
 
 ```bash
 cd src/coordinator
+source .venv/bin/activate
 pytest tests/test_id_generator.py -o log_cli=true --log-cli-level=INFO
 ```
 
@@ -259,7 +273,7 @@ pytest tests/test_id_generator.py -o log_cli=true --log-cli-level=INFO
 
 The project currently includes the following test cases:
 
-- `src/intergated_tests/tests/test_messages.py`
+- `src/integrated_tests/tests/test_messages.py`
   - `test_connect_and_disconnect`
   - `test_subscribe_to_conversation`
   - `test_send_direct_message`
