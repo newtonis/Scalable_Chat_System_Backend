@@ -2,7 +2,7 @@
 
 This is an implementation for the excercise `CHAPTER 12: DESIGN A CHAT SYSTEM` from the book `System Design Interview` from Alex Xu. T
 
-The main idea of the task is to design a chat system backend that has the capacity of scale to handle millon of users. To reach that goal we use a distributed architecture from the begining of the design. The complex design is only worth in the case is used for that amount of users. 
+The main idea of the task is to design a chat system backend that has the capacity of scale to handle millon of users. To reach that goal we use a distributed architecture from the begining of the design. The complex design is only worth in the case is used for that amount of users.
 Not only the complex design would be need in that case but also a cloud service to handle the servers and databases would be needed (AWS, Azure, GCP). Kubernetes could also be an option to manage the server instances in an aritrary amount of nodes, servers don't need to be physical can be containers. In this solution, as a first approach we just containerized the different instances with `docker-compose.yml` declarative style as we run in a single node, but it could be improved.
 
 ## What is made with AI?
@@ -25,13 +25,13 @@ For this excercise we simplified the design to be able to complete it in just da
 
 ## Implementation details
 
-The implementation is with python, using poetry and virtualenvs to handle the dependencies of each service deacoupled from each other. We use flask for the statless endpoints, and asyncio for councurrency (We avoid blocking while waiting for responses or database writes). 
+The implementation is with python, using poetry and virtualenvs to handle the dependencies of each service deacoupled from each other. We use flask for the statless endpoints, and asyncio for councurrency (We avoid blocking while waiting for responses or database writes).
 
-The solution is just a backend, so we rely heavily on tests to verify the functionality. We used two kind of tests, unity tests and integration tests (Using pytest). The system could work with any front end that handle the protocol used in the integration tests. 
+The solution is just a backend, so we rely heavily on tests to verify the functionality. We used two kind of tests, unity tests and integration tests (Using pytest). The system could work with any front end that handle the protocol used in the integration tests.
 
 The modules `kv_store` and `id_generator` have dedicated python libraries, `kv_store_lib` and `id_generator_lib` and this way we separated the servers implementation from the database interface implementation. This interface separation allows us to divide the interface with the databases and the server implementation, which could be useful if we would need to implement distributed databases and service interface could diverge with the database interface. The libraries have unity tests to ensure correct functionality. The `kv_store` and `id_generator` have no tests as this is a simple example but it should have. Using libraries for spefic functionality that can be used project wide has the benefit that we can just easily downgrade the library version used in the service in case of unexpected upgrade bugs, and we also can experiment with the library without the need of upgrade it the main project right away.
 
-The rest of the solution is a `coordinator` and a `chat_server`. The coordinator has tests for the stateless part of the functionality, the `chat_server` and `coordinator` interaction over users usage are tested with integration tests. 
+The rest of the solution is a `coordinator` and a `chat_server`. The coordinator has tests for the stateless part of the functionality, the `chat_server` and `coordinator` interaction over users usage are tested with integration tests.
 
 ## Data model
 
@@ -135,7 +135,7 @@ The containerized version is perfect for a productive environment (as it descrip
 To build the docker images and run in containers you need to install docker. Execute docker compose and then verify integration tests over the system. You need to have poetry installed to test the modules separately in virtualenvs. It is recomended to also have pyenv so you can handle easily different instalations of python versions. You can run in Ubuntu, Windows with wsl or just powershell. It is tested with Windows with wsl.
 
 ```
-docker compose up 
+docker compose up
 ```
 This starts all project services
 . Verify the backend with integrations tests (with poetry):
@@ -167,7 +167,7 @@ start_id_generator localhost
 python -m venv .venv
 source .venv/bin/activate
 poetry install
-start_kv_store localhost 
+start_kv_store localhost
 ```
 
 ### Coordinator
@@ -285,3 +285,7 @@ The project currently includes the following test cases:
   - `test_query_prefix`
   - `test_query_delete_with_suffix`
   - `test_query_delete_with_prefix_and_suffix`
+
+## Linters
+
+The linters used are ruff and pylint
