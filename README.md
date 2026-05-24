@@ -252,7 +252,7 @@ pytest tests/test_kv_store.py -o log_cli=true --log-cli-level=INFO
 ```
 
 #### Id Generator Lib
-To run test of ID generator lib you need to run the redis DB docker compose separately. There is a `docker-compose.yml` in the folder.
+To run test of ID generator lib you need to run the Postgres DB docker compose separately. There is a `docker-compose.yml` in the folder.
 
 ```bash
 cd src/libs/id_generator_lib

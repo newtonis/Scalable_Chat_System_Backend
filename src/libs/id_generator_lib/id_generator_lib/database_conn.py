@@ -55,7 +55,7 @@ class DatabaseConn:
         fila = cursor.fetchone()
         conn.commit()  # Cerramos la transaccion
 
-        if not fila[0]:
+        if not fila or not fila[0]:
             logging.info("Generating data model for message groups")
             command = """
                 CREATE TABLE message_groups

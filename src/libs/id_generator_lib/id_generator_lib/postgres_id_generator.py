@@ -43,7 +43,7 @@ class PostgresIdGenerator:
 
         fila = self.cursor.fetchone()
 
-        if fila[0] is None:
+        if fila is None or fila[0] is None:
             # Create the register if it does not exist (On conflict means the register was already created)
             command = f"""
                 INSERT INTO message_groups(
