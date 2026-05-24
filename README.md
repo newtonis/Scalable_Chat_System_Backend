@@ -313,4 +313,13 @@ cd src/coordinator
 source .venv/bin/activate
 opentelemetry-bootstrap -a install
 opentelemetry-instrument    opentelemetry-instrument     --traces_exporter console     --metrics_exporter console     --logs_exporter console start_coordinator localhost
-```bash
+```
+
+## Features that could be implemented as upgrades from this project.
+
+- End to end encrpytion of messages
+- Group messages
+- Multiple chat servers
+- Deacouple and persist login system from coordinator
+- User prescence servers (to verify user connection using heartbeats)
+- A user lifecylce watchdog, to clean periodically the KV store database registers in case users leave irresponsibly.
