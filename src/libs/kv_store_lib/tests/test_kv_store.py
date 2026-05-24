@@ -83,7 +83,7 @@ def test_create_and_delete_key():
 
     value1, value2 = asyncio.run(test_create_and_delete_key())
 
-    assert value1 == "My value A" and value2 is not None
+    assert value1 == "My value A" and value2 is None
 
 
 # Verifies that keys can be queried by prefix and all matching values are returned.
