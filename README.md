@@ -7,7 +7,7 @@ Not only would the complex design be needed in that case, but also a cloud servi
 
 ## What is made with AI?
 AI was used as a guide for debugging (mostly Gemini) and to generate initial code snippets with Claude. However, the implementation of the entire architecture was done manually using these snippets as a starting point. No part of the code is made entirely by AI without review.
-Documentation of endpoint descriptions and comments on tests, except for integration tests (which are the most complex and important ones), were made with AI using Copilot and reviewed. Also this README had a grammar checked with Copilot.
+Documentation of endpoint descriptions and comments on tests, except for integration tests (which are the most complex and important ones), were made with AI using Copilot and reviewed. Also this README had a grammar check with Copilot.
 
 ## Ideal design
 
