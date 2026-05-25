@@ -7,8 +7,6 @@ from dotenv import load_dotenv
 from pybreaker import CircuitBreaker
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-### Database connection singleton
-
 db_circuit_breaker = CircuitBreaker(fail_max=5, reset_timeout=60, name="PostgreSQL")
 
 
@@ -31,7 +29,7 @@ class DatabaseConn:
 
     @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=0.5, min=0.5, max=5), reraise=True)
     def _connect_with_retry(self, conn_string):
-        """Establish database connection with retry logic and circuit breaker"""
+        # Establish database connection with retry logic and circuit breaker
         return db_circuit_breaker.call(psycopg2.connect, conn_string)
 
     # Try to init the dabase (if already created has no effect)
