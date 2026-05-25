@@ -19,7 +19,7 @@ The criteria was to divide responsibility into microservices to allow for a scal
 
 ## What we included in this design implementation
 
-For this exercise, we simplified the design to be able to complete it in just a few days of work. But it could be easily upgraded if necessary as it is built to be scalable. We used just one coordinator, one chat server, and the login system was mocked as an in-memory database without persistence. We also didn't include persistence servers or group chats. We just made the system capable of allowing connected users to send DMs and subscribe to those DM conversations. A method to request old conversations could be made to handle user synchronization with old messages.
+For this exercise, we simplified the design to be able to complete it in just a few days of work. But it could be easily upgraded if necessary as it is built to be scalable. We used just one coordinator, one chat server, and the login system was mocked as an in-memory database without persistence. We also didn't include presence servers or group chats. We just made the system capable of allowing connected users to send DMs and subscribe to those DM conversations. A method to request old conversations could be made to handle user synchronization with old messages.
 
 ![Texto alternativo](docs/assets/architecture2.svg)
 
