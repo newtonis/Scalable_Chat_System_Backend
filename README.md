@@ -3,7 +3,7 @@
 This is an implementation of the exercise `CHAPTER 12: DESIGN A CHAT SYSTEM` from the book `System Design Interview` by Alex Xu.
 
 The main idea of the task is to design a chat system backend that has the capacity to scale to handle millions of users. To reach that goal, we use a distributed architecture from the beginning of the design. The complex design is only worthwhile in the case where it is used for that number of users.
-Not only would the complex design be needed in that case, but also a cloud service to handle the servers and databases would be needed (AWS, Azure, GCP). Kubernetes could also be an option to manage server instances across an arbitrary number of nodes; servers don't need to be physical—they can be containers. In this solution, as a first approach, we have simply containerized the different instances with `docker-compose.yml` in declarative style as we run in a single node, but it could be improved.
+Not only would the complex design be needed in that case, but also a cloud service to handle the servers and databases would be needed (AWS, Azure, GCP). Kubernetes could also be an option to manage server instances across an arbitrary number of nodes; servers don't need to be physical—they can be pods. In this solution, as a first approach, we have simply containerized the different instances with `docker-compose.yml` in declarative style as we run in a single node, but it could be improved.
 
 ## What is made with AI?
 AI was used as a guide for debugging (mostly Gemini) and to generate initial code snippets with Claude. However, the implementation of the entire architecture was done manually using these snippets as a starting point. No part of the code is made entirely by AI without review.

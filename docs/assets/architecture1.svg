@@ -25,14 +25,14 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="0.52347032"
-     inkscape:cx="766.99669"
+     inkscape:cx="766.99668"
      inkscape:cy="504.32659"
      inkscape:window-width="2560"
      inkscape:window-height="1017"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer2"
      height="100mm" />
   <defs
      id="defs2">
@@ -386,6 +386,20 @@
     </marker>
   </defs>
   <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Layer 2">
+    <rect
+       style="fill:#ffffff;stroke-width:0.799999"
+       id="rect1344"
+       width="207.23079"
+       height="218.35048"
+       x="1.5163229"
+       y="1.5163229"
+       rx="1.3475282"
+       ry="0.63764852" />
+  </g>
+  <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
@@ -430,9 +444,9 @@
        style="font-style:normal;font-weight:normal;font-size:40.1947px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect8474);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="25.789062"
          y="227.71532"
-         id="tspan138632"><tspan
+         id="tspan2829"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138630">Coord 1</tspan></tspan></text>
+           id="tspan2827">Coord 1</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.19364306,0,0,0.21968359,95.789335,-30.924198)"
@@ -440,9 +454,9 @@
        style="font-style:normal;font-weight:normal;font-size:40.1947px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect8474-72);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="25.789062"
          y="227.71532"
-         id="tspan138636"><tspan
+         id="tspan2833"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138634">User</tspan></tspan></text>
+           id="tspan2831">User</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.12445885,0,0,0.14443066,14.320974,61.753849)"
@@ -450,9 +464,9 @@
        style="font-style:normal;font-weight:normal;font-size:26.3123px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect8474-72-9);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="25.789062"
          y="215.21069"
-         id="tspan138640"><tspan
+         id="tspan2837"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138638">Coordinator servers</tspan></tspan></text>
+           id="tspan2835">Coordinator servers</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.12445885,0,0,0.14443066,36.750802,19.086467)"
@@ -460,9 +474,9 @@
        style="font-style:normal;font-weight:normal;font-size:26.3123px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect8474-72-9-4);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="25.789062"
          y="215.21069"
-         id="tspan138644"><tspan
+         id="tspan2841"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138642">Load Balancer</tspan></tspan></text>
+           id="tspan2839">Load Balancer</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.12445885,0,0,0.14443066,177.28884,62.099702)"
@@ -470,9 +484,9 @@
        style="font-style:normal;font-weight:normal;font-size:26.3123px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect8474-72-9-2);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="25.789062"
          y="215.21069"
-         id="tspan138648"><tspan
+         id="tspan2845"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138646">Chat servers</tspan></tspan></text>
+           id="tspan2843">Chat servers</tspan></tspan></text>
     <rect
        style="fill:none;stroke:#000000;stroke-width:0.358484;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect1282-2-8"
@@ -487,9 +501,9 @@
        style="font-style:normal;font-weight:normal;font-size:40.1947px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect8474-9);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="25.789062"
          y="227.71532"
-         id="tspan138652"><tspan
+         id="tspan2849"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138650">Coord 2</tspan></tspan></text>
+           id="tspan2847">Coord 2</tspan></tspan></text>
     <rect
        style="fill:none;stroke:#000000;stroke-width:0.358484;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect1282-2-8-4"
@@ -504,9 +518,9 @@
        style="font-style:normal;font-weight:normal;font-size:40.1947px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect8474-9-5);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="25.789062"
          y="227.71532"
-         id="tspan138656"><tspan
+         id="tspan2853"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138654">Coord n</tspan></tspan></text>
+           id="tspan2851">Coord n</tspan></tspan></text>
     <rect
        style="fill:none;stroke:#000000;stroke-width:0.888926;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect1282-9"
@@ -530,9 +544,9 @@
        style="font-style:normal;font-weight:normal;font-size:40.1947px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect8474-7);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="25.789062"
          y="227.71532"
-         id="tspan138660"><tspan
+         id="tspan2857"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138658">Cserv 1</tspan></tspan></text>
+           id="tspan2855">Cserv 1</tspan></tspan></text>
     <rect
        style="fill:none;stroke:#000000;stroke-width:0.358484;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect1282-2-8-9"
@@ -547,9 +561,9 @@
        style="font-style:normal;font-weight:normal;font-size:40.1947px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect8474-9-55);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="25.789062"
          y="227.71532"
-         id="tspan138664"><tspan
+         id="tspan2861"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138662">Cserv 2</tspan></tspan></text>
+           id="tspan2859">Cserv 2</tspan></tspan></text>
     <rect
        style="fill:none;stroke:#000000;stroke-width:0.358484;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect1282-2-8-4-1"
@@ -564,9 +578,9 @@
        style="font-style:normal;font-weight:normal;font-size:40.1947px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect8474-9-5-7);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="25.789062"
          y="227.71532"
-         id="tspan138668"><tspan
+         id="tspan2865"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138666">Cserv n</tspan></tspan></text>
+           id="tspan2863">Cserv n</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-40.359716,102.58309)"
@@ -574,9 +588,9 @@
        style="font-style:normal;font-weight:normal;font-size:31.3333px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect41404);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="525.46289"
          y="199.10056"
-         id="tspan138672"><tspan
+         id="tspan2869"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138670">Kv Store</tspan></tspan></text>
+           id="tspan2867">Kv Store</tspan></tspan></text>
     <rect
        style="fill:none;stroke:#000000;stroke-width:0.832;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect1282-92-2"
@@ -593,9 +607,9 @@
        style="font-style:normal;font-weight:normal;font-size:31.3333px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect41404-7);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="525.46289"
          y="199.10056"
-         id="tspan138676"><tspan
+         id="tspan2873"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138674">Id gen</tspan></tspan></text>
+           id="tspan2871">Id gen</tspan></tspan></text>
     <rect
        style="fill:none;stroke:#000000;stroke-width:0.913966;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect1282-92-2-4"
@@ -612,9 +626,9 @@
        style="font-style:normal;font-weight:normal;font-size:31.3333px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect41404-7-7);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="525.46289"
          y="199.10056"
-         id="tspan138680"><tspan
+         id="tspan2877"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138678">Login server</tspan></tspan></text>
+           id="tspan2875">Login server</tspan></tspan></text>
     <ellipse
        style="fill:none;stroke:#000000;stroke-width:1.27125;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path72023"
@@ -671,9 +685,9 @@
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect84956);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="627.44922"
          y="297.41104"
-         id="tspan138684"><tspan
+         id="tspan2881"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138682">...</tspan></tspan></text>
+           id="tspan2879">...</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-14.888777,17.382362)"
@@ -681,9 +695,9 @@
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect84956-1);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="627.44922"
          y="297.41104"
-         id="tspan138688"><tspan
+         id="tspan2885"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138686">...</tspan></tspan></text>
+           id="tspan2883">...</tspan></tspan></text>
     <image
        width="20.913836"
        height="18.76943"
@@ -839,9 +853,9 @@
        style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect100351);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="655.14062"
          y="121.42604"
-         id="tspan138692"><tspan
+         id="tspan2889"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138690">Ws</tspan></tspan></text>
+           id="tspan2887">Ws</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-91.5158,-1.9634553)"
@@ -849,7 +863,7 @@
        style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect100351-0);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="655.14062"
          y="121.21286"
-         id="tspan138694">Http</tspan></text>
+         id="tspan2891">Http</tspan></text>
     <image
        width="33.01318"
        height="29.111631"
@@ -865,9 +879,9 @@
        style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect115118);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="38.207031"
          y="795.2444"
-         id="tspan138698"><tspan
+         id="tspan2895"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138696">PostgresDB</tspan></tspan></text>
+           id="tspan2893">PostgresDB</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,134.59908,-18.784524)"
@@ -875,9 +889,9 @@
        style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect115118-5);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="38.207031"
          y="795.2444"
-         id="tspan138702"><tspan
+         id="tspan2899"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138700">PostgresDB</tspan></tspan></text>
+           id="tspan2897">PostgresDB</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,78.116042,-19.542686)"
@@ -885,9 +899,9 @@
        style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect115118-5-5);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="38.207031"
          y="795.2444"
-         id="tspan138706"><tspan
+         id="tspan2903"><tspan
            style="font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI'"
-           id="tspan138704">Redis</tspan></tspan></text>
+           id="tspan2901">Redis</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="scale(0.26458333)"
