@@ -132,7 +132,7 @@ All other unit tests are in the `test` folder of each service/library. Each serv
 
 ## Installation with Docker
 The containerized version is perfect for a production environment (as its descriptive design makes it easy to handle infrastructure versioning and details) and could be further upgraded to multiple nodes using Kubernetes (which would also bring redundancy and scalability).
-To build the Docker images and run them in containers, you need to install Docker. Execute Docker Compose and then verify integration tests over the system. You need to have poetry installed to run the integration tests. Poetry can run on Ubuntu, Windows with WSL, or just PowerShell. It has been tested with Windows with WSL.
+To build the Docker images and run them in containers, you need to install Docker. Execute Docker Compose and then verify integration tests over the system. You need to have poetry installed to run the integration tests. Poetry can run on Ubuntu, Windows WSL, or just PowerShell. It has been tested with Windows WSL.
 
 ```
 docker compose up
