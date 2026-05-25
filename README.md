@@ -31,7 +31,7 @@ The solution is only a backend, so we rely heavily on tests to verify functional
 
 The modules `kv_store` and `id_generator` have dedicated Python libraries, `kv_store_lib` and `id_generator_lib`, and this way we separated the servers implementation from the database interface implementation. This interface separation allows us to divide the interface with the databases and the server implementation, which could be useful if we needed to implement distributed databases and the service interface could diverge from the database interface. The libraries have unit tests to ensure correct functionality. The `kv_store` and `id_generator` services have no tests, as this is a simple example, but they should. Using libraries for specific functionality that can be used project-wide has the benefit that we can easily downgrade the library version used in the service in case of unexpected upgrade bugs, and we can also experiment with the library without needing to upgrade it in the main project right away.
 
-The rest of the solution consists of a `coordinator` and a `chat_server`. The coordinator has tests for the stateless part of the functionality; the `chat_server` and `coordinator` interaction over user usage are tested with integration tests.
+The rest of the solution consists of a `coordinator` and a `chat_server`. The `coordinator` has tests for the stateless part of the functionality; the `chat_server` and `coordinator` interaction over user usage are tested with integration tests.
 
 ### Data model
 
@@ -58,7 +58,7 @@ Tracks user subscriptions to message groups on a specific server.
 Key: dm_message>$message_group_name>$message_number:100
 Value: $message_content
 ```
-Stores direct message content. Message group format: `dm<$min_user_id><$max_user_id>`
+Stores direct message content. Message group format: `dm<$min_user_id<$max_user_id`
 
 ### ID Generator
 
@@ -132,7 +132,7 @@ All other unit tests are in the `test` folder of each service/library. Each serv
 
 ## Installation with Docker
 The containerized version is perfect for a production environment (as its descriptive design makes it easy to handle infrastructure versioning and details) and could be further upgraded to multiple nodes using Kubernetes (which would also bring redundancy and scalability).
-To build the Docker images and run them in containers, you need to install Docker. Execute Docker Compose and then verify integration tests over the system. You need to have Poetry installed to test the modules separately in virtualenvs. It is recommended to also have pyenv so you can easily manage different installations of Python versions. You can run it on Ubuntu, Windows with WSL, or just PowerShell. It is tested with Windows with WSL.
+To build the Docker images and run them in containers, you need to install Docker. Execute Docker Compose and then verify integration tests over the system. You need to have poetry installed to run the integration tests. Poetry can run on Ubuntu, Windows with WSL, or just PowerShell. It has been tested with Windows with WSL.
 
 ```
 docker compose up
@@ -150,7 +150,7 @@ If the tests run correctly, you should see '4 passed'.
 
 ## Complete module installation
 
-To run project modules separately in virtualenvs (and to run unit tests), you need to execute these scripts in order.
+To run project modules separately in virtualenvs (and to run unit tests) you need to have Poetry installed. It is recommended to also have pyenv so you can easily manage different installations of Python versions.
 
 Important: Change `.env_example` files to `.env` before starting. There are three: `src/id_generator/.env_example`, `src/libs/id_generator_lib/.env_example`, and `.env_example`. Also, if you run services without Docker, you need to bring up the database using `docker-compose_just_db.yml`. Rename it to `docker-compose.yml` (replace the full Docker Compose) and run `docker compose up`.
 
@@ -165,6 +165,7 @@ start_id_generator localhost
 
 ### KV Store
 ```bash
+cd src/kv_store
 python -m venv .venv
 source .venv/bin/activate
 poetry lock
@@ -174,6 +175,7 @@ start_kv_store localhost
 
 ### Coordinator
 ```bash
+cd src/coordinator
 python -m venv .venv
 source .venv/bin/activate
 poetry lock
@@ -183,6 +185,7 @@ start_coordinator localhost
 
 ### Chat Server
 ```bash
+cd src/chat_server
 python -m venv .venv
 source .venv/bin/activate
 poetry lock
