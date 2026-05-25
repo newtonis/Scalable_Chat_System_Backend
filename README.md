@@ -140,6 +140,7 @@ docker compose up
 This starts all project services. Verify the backend with integration tests (with Poetry):
 
 ```bash
+cd src/integrated_tests
 source .venv/bin/activate
 poetry lock
 poetry install
